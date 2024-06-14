@@ -1,4 +1,12 @@
-# GLBench  ![](https://img.shields.io/badge/license-MIT-blue)  ![](https://img.shields.io/badge/DSAIL%40HKUST-8A2BE2)
+<h1 align="center"> GLBench: A Comprehensive Benchmark for Graphs with Large Language Models </a></h2>
+<h5 align="center"> If you like our project, please give us a star ⭐ on GitHub for the latest update.</h5>
+
+<h5 align="center">
+
+ ![](https://img.shields.io/badge/DSAIL%40HKUST-8A2BE2) ![GitHub stars](https://img.shields.io/github/stars/NineAbyss/GLBench.svg) ![](https://img.shields.io/badge/license-MIT-blue) 
+
+</h5>
+
 This is the official implementation of the following paper: 
 > **GLBench: A Comprehensive Benchmark for Graphs with Large Language Models**
 > 
