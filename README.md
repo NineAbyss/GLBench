@@ -29,30 +29,30 @@ All datasets in GLBench are available in this [link](https://drive.google.com/dr
 Please place them in the ```datasets``` folder.
 
 # Benchmarking
-- Supervised
+## Supervised
 
-## Classical(GNN)
+### Classical(GNN)
 Benchmark the Classical GNNs (grid-search hyperparameters)
 ```
 cd models/gnn
 bash models/gnn/run.sh
 ```
-## LLM
+### LLM
 Benchmark the LLMs(Sent-BERT, BERT, RoBERTa)
 ```
 cd models/llm
 bash 
 ```
 
-## Enhancer
+### Enhancer
 ```
 cd models/enhancer
 ```
-## Predictor
+### Predictor
 
- ***InstructGLM***
+- InstructGLM
 
-***GraphText***
+- GraphText
 
 Due to some package conflicts or version limitations, we recommend using docker to run GraphText. The docker file is in
 ```
@@ -64,20 +64,20 @@ cd models/predictor/GraphText
 bash run.sh
 ```
 
-***GraphAdapter***
+- GraphAdapter
 ```
 cd models/predictor/GraphAdapter
 bash run.sh
 ```
-***LLaGA***
+- LLaGA
 
 ## Aignment
-***GLEM***
+- GLEM
 ```
 cd models/alignment/GLEM
 bash run.sh
 ```
-***Patton***
+- Patton
 ```
 bash run_pretrain.sh
 bash nc_class_train.sh
@@ -93,10 +93,10 @@ cd models/llm
 You can use your own API key for OpenAI.
 
 ## Enhancer
-***OFA***
-***ZeroG***
+- OFA
+- ZeroG
 ## Predictor
-***GraphGPT***
+- GraphGPT
 ## Our other works
 
 <p align="center"><em>🔥 <strong>A Survey of Graph Meets Large Language Model: Progress and Future Directions (IJCAI'24) <img src="https://img.shields.io/github/stars/yhLeeee/Awesome-LLMs-in-Graph-tasks.svg" alt="GitHub stars" /></strong></em></p>
