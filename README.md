@@ -56,20 +56,20 @@ cd models/predictor/GraphText
 bash run.sh
 ```
 
-##### GraphAdapter
+***GraphAdapter***
 ```
 cd models/predictor/GraphAdapter
 bash run.sh
 ```
-##### LLaGA
+***LLaGA***
 
 #### Aignment
-##### GLEM
+***GLEM***
 ```
 cd models/alignment/GLEM
 bash run.sh
 ```
-##### Patton
+***Patton***
 ```
 bash run_pretrain.sh
 bash nc_class_train.sh
@@ -85,10 +85,10 @@ cd models/llm
 You can use your own API key for OpenAI.
 
 #### Enhancer
-##### OFA
-##### ZeroG
+***OFA***
+***ZeroG***
 #### Predictor
-##### GraphGPT
+***GraphGPT***
 ## Our other works
 
 <p align="center"><em>🔥 <strong>A Survey of Graph Meets Large Language Model: Progress and Future Directions (IJCAI'24) <img src="https://img.shields.io/github/stars/yhLeeee/Awesome-LLMs-in-Graph-tasks.svg" alt="GitHub stars" /></strong></em></p>
