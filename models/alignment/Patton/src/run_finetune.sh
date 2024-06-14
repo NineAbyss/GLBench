@@ -1,0 +1,4 @@
+bash /home/yuhanli/GLBench/models/alignment/Patton/src/nc_class_train_cora.sh > /home/yuhanli/GLBench/models/alignment/Patton/logs/train_cora_results.txt 2>&1
+bash /home/yuhanli/GLBench/models/alignment/Patton/src/nc_class_test_cora.sh >> /home/yuhanli/GLBench/models/alignment/Patton/logs/test_cora_results.txt 2>&1
+bash /home/yuhanli/GLBench/models/alignment/Patton/src/nc_class_train_arxiv.sh > /home/yuhanli/GLBench/models/alignment/Patton/logs/train_arxiv_results.txt 2>&1
+bash /home/yuhanli/GLBench/models/alignment/Patton/src/nc_class_test_arxiv.sh >> /home/yuhanli/GLBench/models/alignment/Patton/logs/test_arxiv_results.txt 2>&1
