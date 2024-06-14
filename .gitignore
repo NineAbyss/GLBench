@@ -15,8 +15,12 @@
 *.pred
 *.zip
 *.log
-
-datasets/
+*.gz
+*.ps
+*.PS
+*.Z
+*.z
+models/enhancer/ENGINE/datasets
 models/enhancer/giant-xrt/proc_data_xrt
 models/alignment/GLEM/temp
 models/alignment/GLEM/temp_results
