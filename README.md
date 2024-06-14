@@ -32,6 +32,7 @@ Benchmark the LLMs(LLaMA3, GPT-3.5-turbo, GPT-4o, DeepSeek-chat)
 ```
 cd models/llm
 ```
+You can use your own API key for OpenAI.
 ### Enhancer
 ```
 cd models/enhancer
@@ -47,5 +48,9 @@ bash run_GraphAdapter.sh
 ```
 cd models/alignment
 ```
+
+## Our other works
+🔥🔥🔥 **A Survey of Graph Meets Large Language Model: Progress and Future Directions IJCAI'24**  
+**[Github Repo](https://github.com/yhLeeee/Awesome-LLMs-in-Graph-tasks)** | **[Paper](https://arxiv.org/abs/2311.12399)**
 ## Acknowledgement
 We are appreciated to all authors of works we cite for their solid work and clear code organization!
