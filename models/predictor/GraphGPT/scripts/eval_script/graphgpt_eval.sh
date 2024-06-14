@@ -12,9 +12,8 @@
 # to fill in the following path to extract projector for the second tuning stage!
 dsname=wikics
 output_model=/data/yuhanli/GraphGPTold
-datapath=/home/yuhanli/GLBench/models/predictor/GraphGPT/instruct_ds/${dsname}_test_instruct_GLBench.json
+datapath=GraphGPT/instruct_ds/${dsname}_test_instruct_GLBench.json
 graph_data_path=../../../datasets/${dsname}.pt
-# graph_data_path=/home/yuhanli/GLBench/models/predictor/GraphGPT/graphdata/graph_data_all.pt
 res_path=./GLBench_${dsname}_nc_output
 
 num_gpus=4
