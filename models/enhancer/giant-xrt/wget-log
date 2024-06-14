@@ -1,0 +1,80 @@
+--2024-04-28 13:19:40--  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:21:52--  (try: 2)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:24:04--  (try: 3)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:26:18--  (try: 4)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:28:32--  (try: 5)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:30:48--  (try: 6)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:33:04--  (try: 7)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:35:20--  (try: 8)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:37:39--  (try: 9)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:39:57--  (try:10)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:42:17--  (try:11)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:44:36--  (try:12)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:46:56--  (try:13)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:49:15--  (try:14)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:51:34--  (try:15)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:53:53--  (try:16)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:56:13--  (try:17)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 13:58:32--  (try:18)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 14:00:51--  (try:19)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Retrying.
+
+--2024-04-28 14:03:10--  (try:20)  https://archive.org/download/pecos-dataset/giant-xrt/ogbn-arxiv.tar.gz
+Connecting to 10.4.124.255:7890... failed: Connection timed out.
+Giving up.
+

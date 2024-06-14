@@ -1,0 +1,66 @@
+# 使用包含CUDA 11.7的基础镜像
+FROM nvidia/cuda:11.7.1-devel-ubuntu20.04
+WORKDIR /app
+
+COPY Miniconda3-latest-Linux-x86_64.sh /app/
+
+# 更新apt包并安装依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        python3 \
+        python3-pip \
+        libopenblas-dev \
+        libssl-dev \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+ 
+# 设置Python3为默认Python版本
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+
+# RUN python -m pip install --upgrade pip 
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple   
+# # 复制Miniconda安装脚本到容器中
+
+
+# RUN python -m pip install --upgrade pip
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# 安装Miniconda
+RUN chmod +x /app/Miniconda3-latest-Linux-x86_64.sh && \
+    /app/Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda && \
+    rm /app/Miniconda3-latest-Linux-x86_64.sh
+
+# 设置环境变量
+ENV PATH=/opt/conda/bin:$PATH
+# 创建并激活名为giant的conda环境，并安装指定的包
+RUN conda create -n giant python=3.10 -y
+
+# 激活giant环境，升级pip，设置pip源，并安装torch相关包
+RUN conda run -n giant python -m pip install --upgrade pip 
+RUN  conda run -n giant pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple 
+
+RUN conda run -n giant pip install -v torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117 && \
+    pip install -v pyg_lib torch_scatter torch_sparse torch_cluster torch_spline_conv -f https://data.pyg.org/whl/torch-1.13.1+cu117.html
+# 创建Python 3.8环境
+# RUN conda create -y -n giant python=3.8
+
+# 激活环境并配置pip使用清华源
+# RUN conda activate giant
+# RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+# 使用pip从本地wheel文件安装
+
+# 升级pip并设置默认使用清华源
+# RUN python -m pip install --upgrade pip 
+# RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple   
+# RUN pip install /app/torch-1.13.1+cu117-cp38-cp38-linux_x86_64.whl
+# RUN pip install /app/torchvision-0.14.1+cu117-cp38-cp38-linux_x86_64.whl
+# RUN pip install /app/torchaudio-0.13.1+cu117-cp38-cp38-linux_x86_64.whl
+# RUN pip install torch==1.13.1+cu117 torchvision==0.14.1+cu117 torchaudio==0.13.1 --extra-index-url https://download.pytorch.org/whl/cu117
+
+
+ 
+# 设置工作目录
+
+
+# 设置容器启动时执行的命令
+CMD ["bash"]
