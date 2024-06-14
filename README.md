@@ -45,9 +45,10 @@ bash
 ```
 
 ### Enhancer
-```
-cd models/enhancer
-```
+- GIANT
+- TAPE
+- OFA
+- ENGINE
 ### Predictor
 
 - InstructGLM
