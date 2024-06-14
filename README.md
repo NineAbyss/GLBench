@@ -16,3 +16,11 @@ to install python packages.
 ## Datasets
 All datasets in GLBench are available in this [link](https://drive.google.com/drive/folders/1WfBIPA3dMd8qQZ6QlQRg9MIFGMwnPdFj?usp=drive_link).
 Please place them in the ```datasets``` folder.
+
+## Benchmarking
+### Classical(GNN)
+Benchmark the Classical GNNs (grid-search hyperparameters)
+```
+cd models/gnn
+bash models/gnn/run.sh
+```

@@ -1,12 +1,10 @@
 #!/bin/bash
 
-# 定义数据集数组
-# datasets=("cora" "pubmed" "citeseer" "wikics" "arxiv")
-datasets=("citeseer")
-models=("GAT")
-hidden_channels=(256)
-num_layers=(3)
-dropout=(0.3)
+datasets=("cora" "pubmed" "citeseer" "wikics" "arxiv" "instagram" "reddit")
+models=("GAT" "SAGE" "GCN")
+hidden_channels=(16 64 128 256)
+num_layers=(2 3)
+dropout=(0.3 0.5 0.6)
 for model in "${models[@]}"
 do
     for dataset in "${datasets[@]}"
