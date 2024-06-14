@@ -84,7 +84,7 @@ bash run_pretrain.sh
 bash nc_class_train.sh
 bash nc_class_test.sh
 ```
-
+> We also provide seperate scripts for different datasets.
 - Zero-shot
 ## LLM
 Benchmark the LLMs(LLaMA3, GPT-3.5-turbo, GPT-4o, DeepSeek-chat)
