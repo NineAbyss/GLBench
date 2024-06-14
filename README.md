@@ -54,11 +54,11 @@ cd models/enhancer
 
 - GraphText
 
-Due to some package conflicts or version limitations, we recommend using docker to run GraphText. The docker file is in
+> Due to some package conflicts or version limitations, we recommend using docker to run GraphText. The docker file is in
 ```
 models/predictor/GraphText/dockerfile
 ```
-After starting the Docker container, run
+> After starting the Docker container, run
 ```
 cd models/predictor/GraphText
 bash run.sh
