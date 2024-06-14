@@ -1,0 +1,1685 @@
+E2E-node: &E2E-node
+  eval_pool_mode: mean
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+    - stage: valid
+      split_name: valid
+    - stage: test
+      split_name: test
+    - stage: test
+      split_name: train
+
+LR-node: &LR-node
+  eval_pool_mode: mean
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+    - stage: valid
+      split_name: train
+    - stage: valid
+      split_name: valid
+    - stage: test
+      split_name: test
+    - stage: test
+      split_name: train
+
+zerobench: &zerobench
+  <<: *E2E-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: cora_node
+    
+    - stage: valid
+      split_name: test
+      dataset: pubmed_node
+    
+    - stage: valid
+      split_name: test
+      dataset: wikics
+      
+    - stage: valid
+      split_name: test
+      dataset: citeseer_node
+
+    - stage: valid
+      split_name: test
+      dataset: instagram_node
+
+    - stage: test
+      split_name: test
+      dataset: cora_node
+    
+    - stage: test
+      split_name: test
+      dataset: pubmed_node
+    
+    - stage: test
+      split_name: test
+      dataset: wikics
+    - stage: test
+      split_name: test
+      dataset: citeseer_node
+
+    - stage: test
+      split_name: test
+      dataset: instagram_node
+
+zeropu: &zeropu
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: pubmed_test
+  
+    - stage: test
+      split_name: test
+      dataset: pubmed_test
+
+zeroci: &zeroci
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: citeseer_test
+  
+    - stage: test
+      split_name: test
+      dataset: citeseer_test
+
+zeroin: &zeroin
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: instagram_test
+  
+    - stage: test
+      split_name: test
+      dataset: instagram_test
+
+arxiv: &arxiv
+  <<: *E2E-node
+  dataset: arxiv
+
+ins_node: &ins_node
+  <<: *E2E-node
+  dataset: instagram_node
+
+red_node: &red_node
+  <<: *E2E-node
+  dataset: reddit_node
+
+
+cora_node: &cora_node
+  <<: *E2E-node
+  dataset: cora_node
+
+pubmed_node: &pubmed_node
+  <<: *E2E-node
+  dataset: pubmed_node
+
+citeseer_node: &citeseer_node
+  <<: *E2E-node
+  dataset: citeseer_node
+
+wikics: &wikics
+  <<: *E2E-node
+  dataset: wikics
+
+logic_arxiv:
+  <<: *E2E-node
+  dataset: logic_arxiv
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+      dataset: logic_arxiv
+    - stage: valid
+      split_name: valid
+      dataset: logic_cora
+    - stage: test
+      split_name: test
+      dataset: logic_cora
+    - stage: test
+      split_name: train
+      dataset: logic_cora
+
+logic_cora:
+  <<: *E2E-node
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+      dataset: cora_node
+    - stage: valid
+      split_name: valid
+      dataset: cora_node
+    - stage: valid
+      split_name: valid
+      dataset: logic_cora
+    - stage: test
+      split_name: test
+      dataset: logic_cora
+    - stage: test
+      split_name: train
+      dataset: logic_cora
+
+E2E-link: &E2E-link
+  eval_pool_mode: mean
+  task_level: e2e_link
+
+cora_link: &cora_link
+  <<: *E2E-link
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+      dataset: cora_link
+    - stage: valid
+      split_name: valid
+      dataset: cora_link_eval
+    - stage: valid
+      split_name: valid
+      dataset: cora_node
+    - stage: test
+      split_name: test
+      dataset: cora_link_eval
+    - stage: test
+      split_name: train
+      dataset: cora_link
+
+pubmed_link: &pubmed_link
+  <<: *E2E-link
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+      dataset: pubmed_link
+    - stage: valid
+      split_name: valid
+      dataset: pubmed_link_eval
+    - stage: test
+      split_name: test
+      dataset: pubmed_link_eval
+    - stage: test
+      split_name: train
+      dataset: pubmed_link
+
+FB15K237: &FB15K237
+  <<: *E2E-link
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+      dataset: FB15K237
+    - stage: valid
+      split_name: valid
+      dataset: FB15K237_eval
+    - stage: test
+      split_name: test
+      dataset: FB15K237_eval
+    - stage: test
+      split_name: train
+      dataset: FB15K237
+
+WN18RR: &WN18RR
+  <<: *E2E-link
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+      dataset: WN18RR
+    - stage: valid
+      split_name: valid
+      dataset: WN18RR_eval
+    - stage: test
+      split_name: test
+      dataset: WN18RR_eval
+    - stage: test
+      split_name: train
+      dataset: WN18RR
+
+E2E-graph: &E2E-graph
+  task_level: e2e_graph
+  eval_pool_mode: mean
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+    - stage: valid
+      split_name: valid
+    - stage: test
+      split_name: test
+    - stage: test
+      split_name: train
+
+chemblpre: &chemblpre
+  <<: *E2E-graph
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+      dataset: chemblpre
+    - stage: valid
+      split_name: valid
+      dataset: chempcba_eval
+    - stage: valid
+      split_name: valid
+      dataset: chemhiv
+    - stage: test
+      split_name: test
+      dataset: chemhiv
+
+chempcba: &chempcba
+  <<: *E2E-graph
+  train: chempcba
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+      dataset: chempcba
+    - stage: valid
+      split_name: valid
+      dataset: chempcba_eval
+    - stage: test
+      split_name: test
+      dataset: chempcba_eval
+    - stage: test
+      split_name: train
+      dataset: chempcba
+
+chemhiv: &chemhiv
+  <<: *E2E-graph
+  dataset: chemhiv
+
+
+
+
+arxiv_fs: &arxiv_fs
+  <<: *LR-node
+  dataset: citeseer_node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: pubmed_test
+  
+    - stage: test
+      split_name: test
+      dataset: pubmed_test
+
+LR-link: &LR-link
+  eval_pool_mode: mean
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+    - stage: valid
+      split_name: train
+    - stage: valid
+      split_name: valid
+    - stage: test
+      split_name: test
+    - stage: test
+      split_name: train
+
+FB15K237_fs: &FB15K237_fs
+  <<: *LR-link
+  dataset: FB15K237_fs
+  eval_set_constructs:
+    - stage: train
+      split_name: train
+      dataset: FB15K237_fs
+    - stage: valid
+      split_name: valid
+      dataset: FB15K237_fs_101
+    - stage: valid
+      split_name: valid
+      dataset: FB15K237_fs_103
+    - stage: valid
+      split_name: valid
+      dataset: FB15K237_fs_105
+    - stage: valid
+      split_name: valid
+      dataset: FB15K237_fs_201
+    - stage: valid
+      split_name: valid
+      dataset: FB15K237_fs_203
+    - stage: valid
+      split_name: valid
+      dataset: FB15K237_fs_205
+    - stage: valid
+      split_name: valid
+      dataset: WN18RR_fs_51
+    - stage: valid
+      split_name: valid
+      dataset: WN18RR_fs_53
+    - stage: valid
+      split_name: valid
+      dataset: WN18RR_fs_55
+    - stage: test
+      split_name: test
+      dataset: FB15K237_fs_101
+    - stage: test
+      split_name: test
+      dataset: FB15K237_fs_103
+    - stage: test
+      split_name: test
+      dataset: FB15K237_fs_105
+    - stage: test
+      split_name: test
+      dataset: FB15K237_fs_201
+    - stage: test
+      split_name: test
+      dataset: FB15K237_fs_203
+    - stage: test
+      split_name: test
+      dataset: FB15K237_fs_205
+    - stage: test
+      split_name: test
+      dataset: WN18RR_fs_51
+    - stage: test
+      split_name: test
+      dataset: WN18RR_fs_53
+    - stage: test
+      split_name: test
+      dataset: WN18RR_fs_55
+
+Cora_zs: &Cora_zs
+  <<: *LR-node
+  dataset: citeseer_node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: cora_test
+  
+    - stage: test
+      split_name: test
+      dataset: cora_test
+
+Pubmed_zs: &Pubmed_zs
+  <<: *LR-node
+  dataset: cora_node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: pubmed_test
+  
+    - stage: test
+      split_name: test
+      dataset: pubmed_test
+
+Citeseer_zs: &Citeseer_zs
+  <<: *LR-node
+  dataset: cora_node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: citeseer_test
+  
+    - stage: test
+      split_name: test
+      dataset: citeseer_test
+
+arxiv_31: &arxiv_31
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: arxiv_test
+  
+    - stage: test
+      split_name: test
+      dataset: arxiv_test
+
+citeseer_31: &citeseer_31
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: citeseer_test
+  
+    - stage: test
+      split_name: test
+      dataset: citeseer_test
+
+cora_31: &cora_31
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: cora_test
+  
+    - stage: test
+      split_name: test
+      dataset: cora_test
+
+pubmed_31: &pubmed_31
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: pubmed_test
+  
+    - stage: test
+      split_name: test
+      dataset: pubmed_test
+
+# arxivcora2citeseer: &arxivcora2citeseer
+#   <<: *LR-node
+#   eval_set_constructs:
+#     # - stage: train
+#     #   split_name: train
+#     #   dataset: arxiv_fs
+#     - stage: train
+#       split_name: train
+#       dataset: arxiv_pretrain
+#     - stage: train
+#       split_name: train
+#       dataset: cora_pretrain
+   
+#     - stage: valid
+#       split_name: test
+#       dataset: citeseer_test
+  
+#     - stage: test
+#       split_name: test
+#       dataset: citeseer_test
+    
+# arxivcora2pubmed: &arxivcora2pubmed
+#   <<: *LR-node
+#   eval_set_constructs:
+#     # - stage: train
+#     #   split_name: train
+#     #   dataset: arxiv_fs
+#     - stage: train
+#       split_name: train
+#       dataset: arxiv_pretrain
+#     - stage: train
+#       split_name: train
+#       dataset: cora_pretrain
+   
+#     - stage: valid
+#       split_name: test
+#       dataset: pubmed_test
+  
+#     - stage: test
+#       split_name: test
+#       dataset: pubmed_test
+
+# arxivpubmed2cora: &arxivpubmed2cora
+#   <<: *LR-node
+#   eval_set_constructs:
+#     # - stage: train
+#     #   split_name: train
+#     #   dataset: arxiv_fs
+#     - stage: train
+#       split_name: train
+#       dataset: arxiv_pretrain
+#     - stage: train
+#       split_name: train
+#       dataset: pubmed_pretrain
+   
+#     - stage: valid
+#       split_name: test
+#       dataset: cora_test
+  
+#     - stage: test
+#       split_name: test
+#       dataset: cora_test
+
+# arxivpubmed2citeseer: &arxivpubmed2citeseer
+#   <<: *LR-node
+#   eval_set_constructs:
+#     # - stage: train
+#     #   split_name: train
+#     #   dataset: arxiv_fs
+#     - stage: train
+#       split_name: train
+#       dataset: arxiv_pretrain
+#     - stage: train
+#       split_name: train
+#       dataset: pubmed_pretrain
+   
+#     - stage: valid
+#       split_name: test
+#       dataset: citeseer_test
+  
+#     - stage: test
+#       split_name: test
+#       dataset: citeseer_test
+
+# arxivciteseer2pubmed: &arxivciteseer2pubmed
+#   <<: *LR-node
+#   eval_set_constructs:
+#     # - stage: train
+#     #   split_name: train
+#     #   dataset: arxiv_fs
+#     - stage: train
+#       split_name: train
+#       dataset: arxiv_pretrain
+#     - stage: train
+#       split_name: train
+#       dataset: citeseer_pretrain
+   
+#     - stage: valid
+#       split_name: test
+#       dataset: pubmed_test
+  
+#     - stage: test
+#       split_name: test
+#       dataset: pubmed_test
+
+# arxivciteseer2cora: &arxivciteseer2cora
+#   <<: *LR-node
+#   eval_set_constructs:
+#     # - stage: train
+#     #   split_name: train
+#     #   dataset: arxiv_fs
+#     - stage: train
+#       split_name: train
+#       dataset: arxiv_pretrain
+#     - stage: train
+#       split_name: train
+#       dataset: citeseer_pretrain
+   
+#     - stage: valid
+#       split_name: test
+#       dataset: cora_test
+  
+#     - stage: test
+#       split_name: test
+#       dataset: cora_test
+
+corapubmed2arxiv: &corapubmed2arxiv
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: arxiv_test
+  
+    - stage: test
+      split_name: test
+      dataset: arxiv_test
+
+coraciteseer2arxiv: &coraciteseer2arxiv
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: arxiv_test
+  
+    - stage: test
+      split_name: test
+      dataset: arxiv_test
+
+pubmedciteseer2arxiv: &pubmedciteseer2arxiv
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: arxiv_test
+  
+    - stage: test
+      split_name: test
+      dataset: arxiv_test
+
+
+wikizs: &wikizs
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+corazs: &corazs
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: cora_test
+  
+    - stage: test
+      split_name: test
+      dataset: cora_test
+
+pubmedzs: &pubmedzs
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: pubmed_test
+  
+    - stage: test
+      split_name: test
+      dataset: pubmed_test
+
+citeseerzs: &citeseerzs
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: citeseer_test
+  
+    - stage: test
+      split_name: test
+      dataset: citeseer_test
+
+cowi_ci: &cowi_ci
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain  
+    - stage: valid
+      split_name: test
+      dataset: citeseer_test
+    - stage: test
+      split_name: test
+      dataset: citeseer_test
+
+cowi_pu: &cowi_pu
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain  
+    - stage: valid
+      split_name: test
+      dataset: pubmed_test
+    - stage: test
+      split_name: test
+      dataset: pubmed_test
+
+copu_wi: &copu_wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain  
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+coci_wi: &coci_wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain  
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+puci_wi: &puci_wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain  
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+puwi_co: &puwi_co
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain  
+    - stage: valid
+      split_name: test
+      dataset: cora_test
+    - stage: test
+      split_name: test
+      dataset: cora_test
+
+puwi_ci: &puwi_ci
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain  
+    - stage: valid
+      split_name: test
+      dataset: citeseer_test
+    - stage: test
+      split_name: test
+      dataset: citeseer_test
+
+ciwi_co: &ciwi_co
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain  
+    - stage: valid
+      split_name: test
+      dataset: cora_test
+    - stage: test
+      split_name: test
+      dataset: cora_test
+
+ciwi_pu: &ciwi_pu
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain  
+    - stage: valid
+      split_name: test
+      dataset: pubmed_test
+    - stage: test
+      split_name: test
+      dataset: pubmed_test
+
+ho_te: &ho_te
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: home_pretrain 
+    - stage: valid
+      split_name: test
+      dataset: tech_test
+    - stage: test
+      split_name: test
+      dataset: tech_test
+
+te_ho: &te_ho
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: tech_pretrain 
+    - stage: valid
+      split_name: test
+      dataset: home_test
+    - stage: test
+      split_name: test
+      dataset: home_test
+
+ci2wiki: &ci2wiki
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+pr2wiki: &pr2wiki
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: home_pretrain
+    - stage: train
+      split_name: train
+      dataset: tech_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+pr2cora: &pr2cora
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: home_pretrain
+    - stage: train
+      split_name: train
+      dataset: tech_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: cora_test
+  
+    - stage: test
+      split_name: test
+      dataset: cora_test
+
+pr2pubmed: &pr2pubmed
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: home_pretrain
+    - stage: train
+      split_name: train
+      dataset: tech_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: pubmed_test
+  
+    - stage: test
+      split_name: test
+      dataset: pubmed_test
+
+pr2citeseer: &pr2citeseer
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: home_pretrain
+    - stage: train
+      split_name: train
+      dataset: tech_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: citeseer_test
+  
+    - stage: test
+      split_name: test
+      dataset: citeseer_test
+
+ci2home: &ci2home
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: home_test
+  
+    - stage: test
+      split_name: test
+      dataset: home_test
+
+ci2tech: &ci2tech
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: tech_test
+  
+    - stage: test
+      split_name: test
+      dataset: tech_test
+
+ci2re: &ci2re
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: reddit_test
+  
+    - stage: test
+      split_name: test
+      dataset: reddit_test
+
+ci2ins: &ci2ins
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: instagram_test
+  
+    - stage: test
+      split_name: test
+      dataset: instagram_test
+
+wi2ins: &wi2ins
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: instagram_test
+  
+    - stage: test
+      split_name: test
+      dataset: instagram_test
+
+wi2re: &wi2re
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: wiki_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: reddit_test
+  
+    - stage: test
+      split_name: test
+      dataset: reddit_test
+
+pr2re: &pr2re
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: home_pretrain
+    - stage: train
+      split_name: train
+      dataset: tech_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: reddit_test
+  
+    - stage: test
+      split_name: test
+      dataset: reddit_test
+
+pr2ins: &pr2ins
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: home_pretrain
+    - stage: train
+      split_name: train
+      dataset: tech_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: instagram_test
+  
+    - stage: test
+      split_name: test
+      dataset: instagram_test
+
+so2co: &so2co
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+    - stage: train
+      split_name: train
+      dataset: instagram_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: cora_test
+  
+    - stage: test
+      split_name: test
+      dataset: cora_test
+
+so2pu: &so2pu
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+    - stage: train
+      split_name: train
+      dataset: instagram_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: pubmed_test
+  
+    - stage: test
+      split_name: test
+      dataset: pubmed_test
+
+so2ci: &so2ci
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+    - stage: train
+      split_name: train
+      dataset: instagram_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: citeseer_test
+  
+    - stage: test
+      split_name: test
+      dataset: citeseer_test
+
+so2wi: &so2wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+    - stage: train
+      split_name: train
+      dataset: instagram_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+so2ho: &so2ho
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+    - stage: train
+      split_name: train
+      dataset: instagram_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: home_test
+  
+    - stage: test
+      split_name: test
+      dataset: home_test
+
+so2te: &so2te
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: reddit_pretrain
+    - stage: train
+      split_name: train
+      dataset: instagram_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: tech_test
+  
+    - stage: test
+      split_name: test
+      dataset: tech_test
+
+ac2wi: &ac2wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+aci2wi: &aci2wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+ap2wi: &ap2wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+pc2wi: &pc2wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+   
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+a2wi: &a2wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: arxiv_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+p2wi: &p2wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: pubmed_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+co2wi: &co2wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: cora_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+ci2wi: &ci2wi
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
+coraind: &coraind
+  <<: *LR-node
+  eval_set_constructs:
+    # - stage: train
+    #   split_name: train
+    #   dataset: arxiv_fs
+    - stage: train
+      split_name: train
+      dataset: citeseer_pretrain
+
+    - stage: valid
+      split_name: test
+      dataset: wiki_test
+  
+    - stage: test
+      split_name: test
+      dataset: wiki_test
+
