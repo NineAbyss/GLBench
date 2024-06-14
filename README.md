@@ -46,6 +46,16 @@ bash
 
 ### Enhancer
 - GIANT
+
+> Due to some package conflicts or version limitations, we recommend using docker to run GIANT. The docker file is in
+```
+models/predictor/giant-xrt/dockerfile
+```
+> After starting the Docker container, run
+```
+cd models/predictor/giant-xrt/
+bash run_all.sh
+```
 - TAPE
 - OFA
 - ENGINE
