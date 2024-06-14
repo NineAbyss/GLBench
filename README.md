@@ -9,3 +9,8 @@ All datasets in GLBench are available in this [link](https://drive.google.com/dr
 
 ## Environment Setup
 Before you begin, ensure that you have Anaconda or Miniconda installed on your system. This guide assumes that you have a CUDA-enabled GPU.
+After create your conda environment (we recommend python==3.10), please run 
+'''
+pip install -r requirements.txt
+'''
+to install python packages.
