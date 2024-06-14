@@ -45,6 +45,7 @@ cd models/enhancer
  ***InstructGLM***
 
 ***GraphText***
+
 Due to some package conflicts or version limitations, we recommend using docker to run GraphText. The docker file is in
 ```
 models/predictor/GraphText/dockerfile
