@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - /data/arxiv
+
+data:
+  name: arxiv_tag # To be overwritten by dataset specific values.
+  alias: ArxivTAG
+  type: tag
+  dataset_path: /app/GraphText/src/datasets/arxiv.pt
+  feat_dim: 384
+  max_spd: 2
+  text_cutoff: 64

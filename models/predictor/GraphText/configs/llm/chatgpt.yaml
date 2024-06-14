@@ -1,0 +1,10 @@
+# @package _global_
+llm:
+  _file_: <LLM-${.name}>
+  name: ChatGPT
+  openai_name: gpt-3.5-turbo
+  temperature: 0 # Fix
+  _target_: llm.gpt.GPT
+  _type: OpenAI
+  hidden_dim: 9999
+  sleep_time: 1

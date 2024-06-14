@@ -1,0 +1,13 @@
+# @package _global_
+
+defaults:
+  - /data/cora
+
+data:
+  name: arxiv_tag # To be overwritten by dataset specific values.
+  alias: ArxivTAG
+  type: tag
+  dataset_path: /hpc2hdd/home/yli258/datasets/arxiv.pt
+  max_spd: 2
+  feat_dim: 384
+  text_cutoff: 64

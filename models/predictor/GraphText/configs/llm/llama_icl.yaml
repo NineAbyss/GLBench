@@ -1,0 +1,16 @@
+# @package _global_
+
+defaults:
+  - llm_meta_data
+# generation hyper-parameters
+# generation hyper-parameters
+llm:
+  name: LLaMA_ICL
+  _target_: llm.llama_icl.LLaMA_ICL
+  _meta_data: ${_llm_md_lookup.${.base_model}}
+  local_dir: ${path.hf_local}${.base_model}/
+  base_model: tinygpt
+  hf_name: ${._meta_data.hf_name}
+  hidden_dim: 4096
+  max_seq_len: 4096
+  max_tgt_len: 4096

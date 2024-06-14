@@ -1,0 +1,72 @@
+# @package _global_
+defaults:
+  - /prompt/graph_tree_meta_data
+model:
+  name: GraphText
+
+# @ GraphText Settings
+#text_info: choice.a1y_t.a2y_t.a0x_t.a1x_t.a2x_t
+text_info: a3y
+rel_info: spd0.spd1
+subgraph_size: 5
+nb_padding: false
+nb_order: true
+node_dropout: 0.5
+
+tree_hierarchy: attr_type.graph_type # Default config
+out_field: choice
+
+# @ Graph (Relational) Information
+sim:
+  topk: 20
+  cache_template: ${path.data_cache}${data.name}/{pg_name}Top${.topk}.sim_proxy_graph
+spd:
+  max_hops: ${oc.select:data.max_spd,3}
+  cache_file: ${path.data_cache}${data.name}/Top${.max_hops}.spd_matrix
+
+ppr:
+  # Value Encoding: None stands for no value encoding; Rank group stands for value grouping
+  #  value_encoding: None
+  #  value_encoding: Rank_10 # Rank to 10 levels
+  #  sort_mat_construct_order: [ [ 0, 1, 2 ],[ 1, 0, 2 ], [ 2, 1, 0 ] ]
+  max_hops: 2
+  default_alpha: 0.25
+  cache_template: ${path.data_cache}${data.name}/Top{topk}_eps{eps}_{normalization}norm_alpha={alpha}.ppr_matrix
+  topk: 32 # Following PPRGo
+  eps: 1e-4 # Following PPRGo
+  normalization: sym # sym or row or col
+rank:
+  methods: [ ppr_0.25 ]
+  #  methods: [ ppr_0.5,  ppr_0.01 ]
+  top_k: 32 # Following PPRGo
+  hidden_dim: 128
+
+# @ Demo for In-Context-Learning
+use_demo: true
+demo:
+  #  select_method: first # Fixed seed examples for every sample
+  select_method: max_degree # Fixed seed examples for every sample
+  template: '{graph_tree_info}The answer is {label}.'
+  #  select: class-prototype # Select center of each class cluster
+  #  select: BM25 # Use BM25 for dynamic retrieval
+  #  select: BM25 # Randomly select seed examples
+  keep_label_description: False
+  n_separators: 2 # Number of separators between examples
+  n_samples: ${data.n_labels} # Number of demonstrations
+
+
+local_rank: 0
+save_path: ${out_dir}checkpoints/
+
+# @ Text Settings
+add_pre_instruction: true
+pre_instruction_template: short
+#remove_quotation: true
+remove_quotation: true
+
+# @ EVALUATE
+eval_sets: ['val' , 'test' ] # Evaluate validation and test sets only
+#eval_sets: [ 'test' ] # Evaluate on test set only
+
+conv_template: no_conv
+save_file: ${out_dir}{split}-${alias}.csv

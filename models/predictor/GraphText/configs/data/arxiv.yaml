@@ -1,0 +1,65 @@
+# @package _global_
+
+defaults:
+  - data_defaults
+
+data:
+  name: arxiv # To be overwritten by dataset specific values.
+  alias: Arxiv
+  type: dgl
+  _init_args:
+    _target_: dgl.data.ArxivGraphDataset
+    raw_dir: '../../../datasets/arxiv.pt'
+
+  text:
+    mode: label_name # How to generate text for each node?
+  label_name:
+    '0': cs.AI (Artificial Intelligence) # 351
+    '1': cs.AR (Hardware Architecture) # 217
+    '2': cs.CC (Computational Complexity) # 418
+    '3': cs.CE (Computational Engineering, Finance, and Science) # 818
+    '4': cs.CG (Computational Geometry) # 426
+    '5': cs.CL (Computation and Language) # 298
+    '6': cs.CR (Cryptography and Security) # 180
+    '7': cs.CV (Computer Vision and Pattern Recognition)
+    '8': cs.CY (Computers and Society)
+    '9': cs.DB (Databases)
+    '10': cs.DC (Distributed, Parallel, and Cluster Computing)
+    '11': cs.DL (Digital Libraries)
+    '12': cs.DM (Discrete Mathematics)
+    '13': cs.DS (Data Structures and Algorithms)
+    '14': cs.ET (Emerging Technologies)
+    '15': cs.FL (Formal Languages and Automata Theory)
+    '16': cs.GL (General Literature)
+    '17': cs.GR (Graphics)
+    '18': cs.GT (Computer Science and Game Theory)
+    '19': cs.HC (Human-Computer Interaction)
+    '20': cs.IR (Information Retrieval)
+    '21': cs.IT (Information Theory)
+    '22': cs.LG (Machine Learning)
+    '23': cs.LO (Logic in Computer Science)
+    '24': cs.MA (Multiagent Systems)
+    '25': cs.MM (Multimedia)
+    '26': cs.MS (Mathematical Software)
+    '27': cs.NA (Numerical Analysis)
+    '28': cs.NE (Neural and Evolutionary Computing)
+    '29': cs.NI (Networking and Internet Architecture)
+    '30': cs.OH (Other Computer Science)
+    '31': cs.OS (Operating Systems)
+    '32': cs.PF (Performance)
+    '33': cs.PL (Programming Languages)
+    '34': cs.RO (Robotics)
+    '35': cs.SC (Symbolic Computation)
+    '36': cs.SD (Sound)
+    '37': cs.SE (Software Engineering)
+    '38': cs.SI (Social and Information Networks)
+    '39': cs.SY (Systems and Control)
+  label_text: name
+  #tokenized_folder: ${path.data_cache}${.name}${.mode}_{model}/
+  #tokenized_flag: ${.tokenized_folder}processed.flag
+  # * meta_info:
+  n_labels: 40
+  n_nodes: 169343
+  feat_dim: 1433
+  task_description: >-
+    You are a helpful assistant that classifies the topic of an academic paper based on the labels of the cited papers. You are going to choose the correct answer from several choices of paper categories: ${data.label_description}

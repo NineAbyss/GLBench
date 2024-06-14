@@ -1,0 +1,27 @@
+# @package _global_
+
+defaults:
+  - data_defaults
+
+data:
+  name: instagram # To be overwritten by dataset specific values.
+  alias: Instagram
+  type: dgl
+  _init_args:
+    _target_: dgl.data.InstagramGraphDataset
+    raw_dir: '../../../datasets/instagram.pt'
+
+  text:
+    mode: label_name # How to generate text for each node?
+  label_name:
+    '0': Normal Users 
+    '1': Commercial Users
+  label_text: name
+  #tokenized_folder: ${path.data_cache}${.name}${.mode}_{model}/
+  #tokenized_flag: ${.tokenized_folder}processed.flag
+  # * meta_info:
+  n_labels: 2
+  n_nodes: 11339
+  feat_dim: 300
+  task_description: >-
+    You are a helpful assistant that classifies the categories of a user on Instagram based on the following relationship. You are going to choose the correct answer from several choices of user categories: ${data.label_description}

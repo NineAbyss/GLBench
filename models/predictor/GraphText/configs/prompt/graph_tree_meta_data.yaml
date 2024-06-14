@@ -1,0 +1,61 @@
+# @package _global_
+tree_node_alias:
+  # graph continuous feature names
+  x: feature
+  y: neighbor labels
+  a0x: center node feature
+  a1x: first-order smoothed feature
+  a2x: second-order smoothed feature
+  a3x: third-order smoothed feature
+  a1y: first-order pseudo labels
+  a2y: second-order pseudo labels
+  a3y: third-order pseudo labels
+  a4y: fourth-order pseudo labels
+  # graph text names
+  choice: neighbor labels
+  a0x_t: center node feature
+  a1x_t: first-order smoothed feature
+  a2x_t: second-order smoothed feature
+  a3x_t: third-order smoothed feature
+  a1y_t: first-order pseudo labels
+  a2y_t: second-order pseudo labels
+  a3y_t: third-order pseudo labels
+  a4y_t: fourth-order pseudo labels
+  # proxy graph names
+  a0x_sim: feature similarity graph
+  a1x_sim: first-order feature similarity graph
+  a2x_sim: second-order feature similarity graph
+  a3x_sim: third-order feature similarity graph
+  spd0: center node
+  spd1: first-hop neighbor
+  spd2: second-hop neighbor
+  spd3: third-hop neighbor
+subgraph_size: 3
+
+attr_mask:
+  title: CenterOnly
+  tape: CenterOnly
+  text: CenterOnly
+pg_size: # Size of proxy graph
+  spd0: 1
+  spd1: ${subgraph_size}
+  spd2: ${subgraph_size}
+  spd3: ${subgraph_size}
+  pprtopk: ${subgraph_size} # Original subgraphsize
+  a0x_sim: ${subgraph_size}
+  a1x_sim: ${subgraph_size}
+  a2x_sim: ${subgraph_size}
+  a3x_sim: ${subgraph_size}
+  a4x_sim: ${subgraph_size}
+  ppr: ${subgraph_size}
+
+in_field_description: null # To be initialized afterward
+#_in_field_description_lookup:
+#  choice: neighbor labels
+#  a0x_t: '<center_node_feature>: The center node feature.'
+#  a1x_t: '<first-order_smoothed_feature>: '
+#  a2x_t: second-order smoothed feature
+#  a3x_t: third-order smoothed feature
+#  a1y_t: first-order pseudo labels
+#  a2y_t: second-order pseudo labels
+#  a3y_t: third-order pseudo labels

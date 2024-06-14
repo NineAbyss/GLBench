@@ -1,0 +1,9 @@
+# @package _global_
+defaults:
+  - override /llm: chatgpt # Disable Hydra logging
+
+mode: icl
+data:
+  max_eval_samples: 999999
+node_dropout: 0 # NO NEED FOR DROPOUT NODE
+wandb_proj: GraphText-ICL-Release

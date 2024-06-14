@@ -1,0 +1,32 @@
+# @package _global_
+
+defaults:
+  - data_defaults
+
+data:
+  name: cora # To be overwritten by dataset specific values.
+  alias: Cora
+  type: dgl
+  _init_args:
+    _target_: dgl.data.CoraGraphDataset
+    raw_dir: '../../../datasets/cora.pt'
+
+  text:
+    mode: label_name # How to generate text for each node?
+  label_name:
+    '0': Theory # 351
+    '1': Reinforcement Learning # 217
+    '2': Genetic Algorithm # 418
+    '3': Neural Network # 818
+    '4': Probabilistic Method # 426
+    '5': Case Based # 298
+    '6': Rule Learning # 180
+  label_text: name
+  #tokenized_folder: ${path.data_cache}${.name}${.mode}_{model}/
+  #tokenized_flag: ${.tokenized_folder}processed.flag
+  # * meta_info:
+  n_labels: 7
+  n_nodes: 2708
+  feat_dim: 1433
+  task_description: >-
+    You are a helpful assistant that classifies the topic of an academic paper based on the labels of the cited papers. You are going to choose the correct answer from several choices of paper categories: ${data.label_description}

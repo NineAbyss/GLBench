@@ -1,0 +1,12 @@
+# @package _global_
+
+defaults:
+  - /data/wikics
+
+data:
+  name: wikics_tag # To be overwritten by dataset specific values.
+  alias: WikicsTAG
+  type: tag
+  dataset_path: /hpc2hdd/home/yli258/datasets/wikics.pt
+  feat_dim: 384
+  text_cutoff: 64

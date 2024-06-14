@@ -1,0 +1,28 @@
+# @package _global_
+
+defaults:
+  - data_defaults
+
+data:
+  name: Pubmed # To be overwritten by dataset specific values.
+  alias: Pub
+  type: dgl
+  _init_args:
+    _target_: dgl.data.PubmedGraphDataset
+    raw_dir: '../../../datasets/pubmed.pt'
+
+  text:
+    mode: label_name # How to generate text for each node?
+  label_name:
+    '0': Experimental # 
+    '1': Type 1 # 
+    '2': Type 2 # 
+  label_text: name
+  #tokenized_folder: ${path.data_cache}${.name}${.mode}_{model}/
+  #tokenized_flag: ${.tokenized_folder}processed.flag
+  # * meta_info:
+  n_labels: 3
+  n_nodes: 19717
+  feat_dim: 500
+  task_description: >-
+    You are a helpful assistant that classifies the topic of an academic paper based on the labels of the cited papers. You are going to choose the correct answer from several choices of paper categories: ${data.label_description}

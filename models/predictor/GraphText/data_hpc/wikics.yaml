@@ -1,0 +1,35 @@
+# @package _global_
+
+defaults:
+  - data_defaults
+
+data:
+  name: wikics # To be overwritten by dataset specific values.
+  alias: Wikics
+  type: dgl
+  _init_args:
+    _target_: dgl.data.WikicsGraphDataset
+    raw_dir: '../../../datasets/wikics.pt'
+
+  text:
+    mode: label_name # How to generate text for each node?
+  label_name:
+    '0': Computational Linguistics
+    '1': Databases 
+    '2': Operating Systems
+    '3': Computer Architecture 
+    '4': Computer Security
+    '5': Internet Protocols
+    '6': Computer File Systems
+    '7': Distributed Computing Architecture
+    '8': Web Technology
+    '9': Programming Language Topics
+  label_text: name
+  #tokenized_folder: ${path.data_cache}${.name}${.mode}_{model}/
+  #tokenized_flag: ${.tokenized_folder}processed.flag
+  # * meta_info:
+  n_labels: 10
+  n_nodes: 11701
+  feat_dim: 300
+  task_description: >-
+    You are a helpful assistant that classifies the sub-categories of CS (Computer Science) of an Wikipedia page based on the labels of the reference links. You are going to choose the correct answer from several choices of paper categories: ${data.label_description}

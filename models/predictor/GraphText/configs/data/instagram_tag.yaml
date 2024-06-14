@@ -1,0 +1,12 @@
+# @package _global_
+
+defaults:
+  - /data/instagram
+
+data:
+  name: instagram_tag # To be overwritten by dataset specific values.
+  alias: InstagramTAG
+  type: tag
+  dataset_path: /app/GraphText/src/datasets/instagram.pt
+  feat_dim: 300
+  text_cutoff: 64

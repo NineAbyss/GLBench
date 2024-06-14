@@ -1,0 +1,32 @@
+# @package _global_
+
+defaults:
+  - data_defaults
+
+data:
+  name: texas # To be overwritten by dataset specific values.
+  alias: Texas
+  type: dgl
+#  type: explore
+  _init_args:
+    _target_: dgl.data.TexasDataset
+    raw_dir: ${path.data_storage}
+  dataset_path: temp/data/${data.name}
+
+  text:
+    mode: label_name # How to generate text for each node?
+  label_name:
+    '0': student
+    '1': project
+    '2': course
+    '3': staff
+    '4': faculty
+  label_text: name
+  #tokenized_folder: ${path.data_cache}${.name}${.mode}_{model}/
+  #tokenized_flag: ${.tokenized_folder}processed.flag
+  # * meta_info:
+  n_labels: 5
+  n_nodes: 183
+  feat_dim: 1703
+  task_description: >- 
+    You are a helpful assistant that classifies the role of a web page in the network, where nodes represent web pages, and edges are hyperlinks between them. The web pages are manually classified into the five categories: ${data.label_description}

@@ -1,0 +1,139 @@
+# @package _global_
+defaults:
+  - override /llm: llama_peft
+
+mode: sft
+data:
+  max_eval_samples: 999999
+use_demo: false
+out_field: c
+wandb_proj: GraphText-SFT
+
+# Prompt
+
+human_prompt: base
+gpt_prompt: base
+instruct_prompt: sft
+demo_prompt: base
+demo_qa_prompt: base
+question_prompt: sft
+
+# @ Encoder
+encoder:
+  dropout: 0.5
+  input_norm: true
+  output_norm: true
+  norm: LN
+  input_dropout: true
+  output_dropout: false
+  new_arg: true
+encoder_alias: ${encoder.dropout}do${encoder.dropout}
+log_freq: 500
+
+use_flash_attn: false
+dropout: 0.5
+eval_choice_only: ${add_class_token}
+alias: ${llm.name}-${data.alias}-${rel_info}-${text_info}
+
+#
+add_class_token: true
+add_label_name_output: true
+add_field_token: true
+add_info_token: true
+add_pad_token: true
+#
+eval_metric: val_acc
+
+
+# @ EVALUATE
+add_loop_inference: false
+use_fwd_eval: false # FIXME To be removed
+metrics: [ 'acc','f1' ]
+eval_sets: [ 'train', 'val' , 'test' ]
+min_eval_step: 100
+choice_readout_pos: 0
+eval_freq: 100
+
+# @ LLM
+max_tgt_len: 2048 # the maximum sequence length to be generated
+max_gen_len: 5 # the maximum sequence length to be generated
+lora:
+  r: -1 # skip LoRA if rank < 1
+  alpha: ${.r}
+  dropout: 0.1
+  target_modules: [ q_proj, v_proj, k_proj, o_proj ]
+#  modules_to_save: [ embed_tokens, lm_head ]
+
+# @ Trainer (Agent)
+stage: 2
+save_freq: 30000
+max_epochs: 9999
+total_steps: 700 #Number of train steps
+frozen_encoder: false
+frozen_ori_llm_parameters: true # Fixme
+
+agent_name: DeepSpeedAgent
+ds_config_path:   /openllama_peft_stage_${stage}.json
+nproc_per_node: 4
+# @ Deepspeed related
+use_deepspeed: true # For debug only
+eq_batch_size: 16
+inf_batch_size: ${oc.select:model._meta_data.inf_bsz,12}
+max_bsz_per_gpu: ${oc.select:llm._meta_data.max_bsz_per_gpu,12}
+bsz_per_gpu: ${get_bsz_per_gpu:${eq_batch_size}, ${max_bsz_per_gpu}}
+grad_acc_steps: ${get_grad_acc_steps:${eq_batch_size}, ${max_bsz_per_gpu}}
+
+# ! Float
+use_fp16: true
+use_bf16: true
+optimizer_type: AdamW
+
+# ! Optimizer
+warmup_rate: 0.1
+lr: 5e-5
+
+ds: # Deepspeed config
+  train_batch_size: ${eq_batch_size}
+  train_micro_batch_size_per_gpu: ${bsz_per_gpu}
+  gradient_accumulation_steps: ${grad_acc_steps} # ! To be overwritten
+  steps_per_print: 2000
+  gradient_clipping: 1.0
+  zero_optimization:
+    stage: 2 # ??? # Original 2
+    offload_optimizer:
+      device: cpu
+    contiguous_gradients: true
+    allgather_bucket_size: 500000000
+    allgather_partitions: true
+
+  fp16:
+    enabled: ${use_fp16}
+    opt_level: O2
+    min_loss_scale: 1
+
+  bf16:
+    enable: ${use_bf16}
+
+  optimizer:
+    type: ${optimizer_type}
+    params:
+      lr: ${lr}
+      betas: [ 0.9, 0.95 ]
+      eps: 1e-8
+      weight_decay: 0.001
+
+  scheduler:
+    type: WarmupDecayLR
+    params:
+      warmup_min_lr: 0
+      warmup_max_lr: ${lr}
+      warmup_num_steps: ${round_mult:${total_steps}, ${warmup_rate}}
+      total_num_steps: ${total_steps}
+
+  activation_checkpointing:
+    partition_activations: true
+    cpu_checkpointing: true
+    contiguous_memory_optimization: false
+    number_checkpoints: null
+    synchronize_checkpoint_boundary: false
+    profile: false

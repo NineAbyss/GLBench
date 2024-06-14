@@ -1,0 +1,27 @@
+# @package _global_
+
+prompt_templates:
+  qa_instruction: ''
+  task_context: ''
+
+data:
+  name: ??? # To be overwritten by dataset specific values.
+  alias: ??? # To be overwritten by dataset specific values.
+  _target_: .datasets.SeqGraph
+  type: ??? # To be overwritten by dataset specific values.
+  n_labels: ???
+  n_nodes: ???
+
+  # * raw_data:
+  raw_data_path: ${path.data_storage}
+  info_file: ${working_dir}graph.info
+
+  # * process:
+  max_train_samples: 9999999
+  max_eval_samples: 999999
+  max_test_samples: 999999
+  label_description: ''
+  n_shots: -1 # -1 for default split
+  #tokenized_folder: ${path.data_cache}${.name}${.mode}_{model}/
+  #tokenized_flag: ${.tokenized_folder}processed.flag
+

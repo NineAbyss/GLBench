@@ -1,0 +1,59 @@
+# @package _global_
+# ! Primary hydra config for ALL models
+defaults:
+  - _self_ # To be overwritten by experimental settings
+  - optional user: env # (optional environment settings to add
+  - data: texas
+  - llm: chatgpt
+  - model: graph_text
+  - optional template: ${model}/${data}
+  - prompt: prompts
+  - exp: icl
+  - override /hydra/hydra_logging@_group_: none # Disable Hydra logging
+  - override /hydra/job_logging@_group_: none # Disable Hydra logging
+
+debug: false
+
+# ! Path
+# @ Note that path end with /, file end without /
+path:
+  data_cache: data_cache/
+  data_storage: data/
+  temp: temp/ # Removable
+  out_dir: output/ #
+
+env:
+  vars:
+    openai_api_key: ${oc.env:OPENAI_API_KEY,YourAPIKey} # Overwrite this to your API key
+
+working_dir: ${path.temp}working_dir/${.uid}/ # For deletable temporary files.
+out_dir: ${path.out_dir}${oc.select:wandb.sweep_id,local}/${model.name}/${.uid}-${.alias}/ # For files to be saved, to be initialized
+uid: null # To be generated in the main program
+seed: 2023
+#
+eval_freq: 50
+use_wandb: true
+alias: ${llm.name}-${data.alias}-${data.n_shots}Shot-Text=${text_info}-Rel=${rel_info}
+wandb:
+  id: null
+  name: ${alias}
+
+slurm_id: ${oc.env:SLURM_JOB_ID,null}
+logging:
+  level: info
+  log_wandb_metric_to_stdout: False
+code_version: 14.2
+
+# @ ??
+hydra:
+  run:
+    dir: ../temp/hydra/${now:%Y.%m.%d}/${now:%H.%M.%S}
+
+# ! _file_ related
+_unimportant_cfg:
+  fields: [ gpus, debug, wandb, proj, env, uid,
+            local_rank, cmd, label_name, logging,
+            use_wandb, n_nodes, n_labels, alias
+  ]
+  postfix: [ _path, _file, _dir, _url ]
+  prefix: [ _ ]

@@ -1,0 +1,28 @@
+_llm_md_lookup:
+  tinygpt:
+    hf_name: HuggingFaceM4/tiny-random-LlamaForCausalLM
+    max_bsz_per_gpu: 18
+    inf_bsz: ${.max_bsz_per_gpu}
+  llama2-7b:
+    hf_name: meta-llama/Llama-2-7b-hf
+    max_bsz_per_gpu: 12 # FP16, 40GB
+    inf_bsz: 12 # FP16, 40GB
+  llama2-7b-chat:
+    hf_name: meta-llama/Llama-2-7b-chat-hf
+    max_bsz_per_gpu: 12 # FP16, 40GB
+    inf_bsz: 12 # FP16, 40GB
+  llama2-13b-chat:
+    hf_name: meta-llama/Llama-2-13b-chat-hf
+    max_bsz_per_gpu: 4 # FP16, 40GB
+    inf_bsz: 8
+  llama2-70b-chat:
+    hf_name: meta-llama/Llama-2-70b-chat-hf
+    max_bsz_per_gpu: 4 # FP16, 40GB
+    inf_bsz: ${.max_bsz_per_gpu}
+
+  deberta-base:
+    hf_name: microsoft/deberta-v3-base
+    inf_bsz: 480 # FP16, 40GB
+  deberta-large:
+    hf_name: microsoft/deberta-v3-large
+    inf_bsz: 280 # FP16, 40GB

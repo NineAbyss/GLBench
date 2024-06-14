@@ -1,0 +1,10 @@
+# @package _global_
+llm:
+  _file_: <LLM-${.name}>
+  name: GPT4
+  openai_name: gpt-4
+  temperature: 0 # Fix
+  _target_: llm.gpt.GPT
+  _type: OpenAI
+  hidden_dim: 9999
+  sleep_time: 5

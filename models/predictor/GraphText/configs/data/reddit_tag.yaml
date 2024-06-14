@@ -1,0 +1,12 @@
+# @package _global_
+
+defaults:
+  - /data/reddit
+
+data:
+  name: reddit_tag # To be overwritten by dataset specific values.
+  alias: RedditTAG
+  type: tag
+  dataset_path: /app/GraphText/src/datasets/reddit.pt
+  feat_dim: 300
+  text_cutoff: 64

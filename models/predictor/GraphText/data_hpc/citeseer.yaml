@@ -1,0 +1,33 @@
+# @package _global_
+
+defaults:
+  - data_defaults
+
+data:
+  name: citeseer # To be overwritten by dataset specific values.
+  alias: Cite
+  type: dgl
+#  type: explore
+  _init_args:
+    _target_: dgl.data.CiteseerGraphDataset
+    raw_dir: ${path.data_storage}
+  dataset_path: temp/data/${data.name}
+
+  text:
+    mode: label_name # How to generate text for each node?
+  label_name:
+    '0': Agents # 351
+    '1': Artificial Intelligence # 217
+    '2': Database # 418
+    '3': Information Retrieval # 818
+    '4': Machine Learning # 426
+    '5': Human computer interaction # 298
+  label_text: name
+  #tokenized_folder: ${path.data_cache}${.name}${.mode}_{model}/
+  #tokenized_flag: ${.tokenized_folder}processed.flag
+  # * meta_info:
+  n_labels: 6
+  n_nodes: 3327
+  feat_dim: 3703
+  task_description: >-
+    You are a helpful assistant that classifies the topic of an academic paper based on the labels of the cited papers. You are going to choose the correct answer from several choices of paper categories: ${data.label_description}

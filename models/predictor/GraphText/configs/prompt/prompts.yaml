@@ -1,0 +1,98 @@
+# @package _global_
+# Shared Prompt Settings for ALL PROMPTS
+
+# @ Few-shot Demonstration
+human_prompt: base
+gpt_prompt: base
+instruct_prompt: base
+demo_prompt: base
+demo_qa_prompt: base
+question_prompt: icl
+prompt:
+  style: xml
+  human:
+    _target_: graph_text.prompts.Prompt
+    template: ${prompt_templates.human[${human_prompt}]}
+    instruction: ${prompt_templates.instruction[${instruct_prompt}]}
+  demo: #
+    _target_: graph_text.prompts.Prompt
+    template: ${prompt_templates.demo[${demo_prompt}]}
+  demo_qa: #
+    _target_: graph_text.prompts.Prompt
+    template: ${prompt_templates.demo_qa.${demo_qa_prompt}.${..style}}
+  question: #
+    _target_: graph_text.prompts.Prompt
+    template: ${prompt_templates.question[${question_prompt}]}
+  gpt: # @ for SFT target
+    _target_: graph_text.prompts.Prompt
+    template: ${prompt_templates.gpt[${gpt_prompt}]}
+
+prompt_templates:
+  human:
+    # @ human
+    base: >- # Base template for human input
+      {instruction}{demo}{question}
+    # @
+  instruction:
+    # @ Text classification prompt
+    na: ''
+    # Role + Task Description + Instructions
+    sft: >-
+      Your goal is to perform node classification. You are given the information of each node in a xml format. Using the given information of a node, you need to classify the node to several choices: ${data.label_description}. Remember, your answer should be in the form of the class label.
+    base: >- # Cora
+      ${data.task_description}\n
+  #      I will give you the following information:\n${in_field_description}\n
+  demo:
+    na: ''
+    base: >-
+      \nHere are a few examples:\n
+      {demonstration}\n\n
+      Now let's answer the question below:\n
+  demo_qa:
+    base:
+      xml: >-
+        {graph_info}\n<question>What's the topic of academic paper given the information above?</question>\n<answer>{answer}</answer>
+      json: >-
+        {graph_info}\n<question>What's the topic of academic paper?${data.label_description}</question>\n
+        <answer>{answer}</answer>
+      flatten: >-
+        {graph_info}\n<question>What's the topic of academic paper?${data.label_description}</question>\n
+        <answer>{answer}</answer>
+      random_flatten: >-
+        {graph_info}\n<question>What's the topic of academic paper?${data.label_description}</question>\n
+        <answer>{answer}</answer>
+      xml_wo_text: >-
+        {graph_info}\n<question>What's the topic of academic paper?${data.label_description}</question>\n
+        <answer>{answer}</answer>
+  question:
+    cla_fstring: >-
+      {instruction}{demonstration}\n
+          Question: What's the topic of academic paper [{query_msg}]?${data.label_description}\n
+          Answer:
+    label_prop_xml: >-
+      {information}\n
+      <question>What's the topic of academic paper?${data.label_description}</question>\n
+      <answer>
+    label_prop_xml_cot: >-
+      {information}\n
+      <question>What's the topic of academic paper?${data.label_description}</question>\n
+      Generate your answer with <answer> </answer> around it. Let's think step by step and solve it with the message passing!
+    label_prop_xml_demo: >-
+      {information}\n
+      <question>What's the topic of the target academic paper with the neighborhood label information above?${data.label_description}</question>\n
+      <answer>{answer}</answer>
+    icl: >-
+      {graph_info}\nWhat's the topic of the paper given the information above? Valid choices are ${data.label_description}.\nRemember, your answer should be in the form of the class choice wrapped by <answer> </answer>.
+    icl_general: >-
+      {graph_info}\nWhat's the target class given the information above? Valid choices are ${data.label_description}.\nRemember, your answer should be in the form of the class choice wrapped by <answer> </answer>.
+    icl_new: >-
+      {graph_info}\nWhat's the topic of the paper given the information above? Valid choices are ${data.label_description}.\nRemember, you have to give a choice as the answer, and your answer should be in the form of the class choice wrapped by <answer> </answer>.
+    icl_tag: >-
+      {graph_info}\nWhat's the topic of the paper given the information above? Valid choices are ${data.label_description}.\nRemember, your answer should be in the form of a capital letter of choice index wrapped by <answer> </answer>, e.g., <answer>A</answer>, <answer>B</answer>, etc.
+    icl_zscot: >-
+      {graph_info}\nWhat's the topic of the paper given the information above? Valid choices are ${data.label_description}.\nLet's think step by step first and then answer the question. Remember, you have to give a choice as the answer, and your answer should be in the form of the class choice wrapped by <answer> </answer>.
+    sft: >-
+      \n{graph_info}\n
+  gpt:
+    base: >- # Researcher Arxiv
+      The answer is: {answer}.
