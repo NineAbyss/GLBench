@@ -16,7 +16,7 @@ This is the official implementation of the following paper:
 <p align="center"><img width="75%" src="images/trend.png" /></p>
 <p align="center"><em>Trend of Graph&LLM.</em></p>
 
-## Environment Setup
+# Environment Setup
 Before you begin, ensure that you have Anaconda or Miniconda installed on your system. This guide assumes that you have a CUDA-enabled GPU.
 After create your conda environment (we recommend python==3.10), please run 
 ```
