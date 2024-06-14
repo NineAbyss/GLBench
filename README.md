@@ -50,7 +50,9 @@ cd models/alignment
 ```
 
 ## Our other works
-🔥🔥🔥 **A Survey of Graph Meets Large Language Model: Progress and Future Directions IJCAI'24**  
-**[Github Repo](https://github.com/yhLeeee/Awesome-LLMs-in-Graph-tasks)** | **[Paper](https://arxiv.org/abs/2311.12399)**
+
+<p align="center"><em>🔥 **A Survey of Graph Meets Large Language Model: Progress and Future Directions (IJCAI'24)**</em></p>
+<p align="center"><em>**[Github Repo](https://github.com/yhLeeee/Awesome-LLMs-in-Graph-tasks)** | **[Paper](https://arxiv.org/abs/2311.12399)**</em></p>
+
 ## Acknowledgement
 We are appreciated to all authors of works we cite for their solid work and clear code organization!
