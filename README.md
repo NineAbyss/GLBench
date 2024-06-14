@@ -37,6 +37,7 @@ bash
 ```
 
 #### Enhancer
+***
 ```
 cd models/enhancer
 ```
