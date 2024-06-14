@@ -24,31 +24,31 @@ pip install -r requirements.txt
 ```
 to install python packages.
 
-## Datasets
+# Datasets
 All datasets in GLBench are available in this [link](https://drive.google.com/drive/folders/1WfBIPA3dMd8qQZ6QlQRg9MIFGMwnPdFj?usp=drive_link).
 Please place them in the ```datasets``` folder.
 
-## Benchmarking
-### Supervised
+# Benchmarking
+- Supervised
 
-#### Classical(GNN)
+## Classical(GNN)
 Benchmark the Classical GNNs (grid-search hyperparameters)
 ```
 cd models/gnn
 bash models/gnn/run.sh
 ```
-#### LLM
+## LLM
 Benchmark the LLMs(Sent-BERT, BERT, RoBERTa)
 ```
 cd models/llm
 bash 
 ```
 
-#### Enhancer
+## Enhancer
 ```
 cd models/enhancer
 ```
-#### Predictor
+## Predictor
 
  ***InstructGLM***
 
@@ -71,7 +71,7 @@ bash run.sh
 ```
 ***LLaGA***
 
-#### Aignment
+## Aignment
 ***GLEM***
 ```
 cd models/alignment/GLEM
@@ -84,18 +84,18 @@ bash nc_class_train.sh
 bash nc_class_test.sh
 ```
 
-### Zero-shot
-#### LLM
+- Zero-shot
+## LLM
 Benchmark the LLMs(LLaMA3, GPT-3.5-turbo, GPT-4o, DeepSeek-chat)
 ```
 cd models/llm
 ```
 You can use your own API key for OpenAI.
 
-#### Enhancer
+## Enhancer
 ***OFA***
 ***ZeroG***
-#### Predictor
+## Predictor
 ***GraphGPT***
 ## Our other works
 
