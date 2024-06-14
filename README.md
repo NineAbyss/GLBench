@@ -30,8 +30,14 @@ Benchmark the LLMs(LLaMA3, GPT-3.5-turbo, GPT-4o, DeepSeek-chat)
 cd models/llm
 ```
 ### Enhancer
+```
 cd models/enhancer
+```
 ### Predictor
+```
 cd models/predictor
+```
 ### Aignment
+```
 cd models/alignment
+```
