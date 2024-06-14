@@ -34,9 +34,12 @@ cd models/llm
 cd models/enhancer
 ```
 ### Predictor
+#### GraphAdapter
 ```
-cd models/predictor
+cd models/predictor/GraphAdapter
+bash run_GraphAdapter.sh
 ```
+
 ### Aignment
 ```
 cd models/alignment
