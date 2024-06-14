@@ -4,8 +4,6 @@ This is the official implementation of the following paper:
 > 
 > Yuhan Li, Peisong Wang, Xiao Zhu, Aochuan Chen, Haiyun Jiang, Deng Cai, Victor Wai Kin Chan, Jia Li
 
-## Datasets
-All datasets in GLBench are available in this [link](https://drive.google.com/drive/folders/1WfBIPA3dMd8qQZ6QlQRg9MIFGMwnPdFj?usp=drive_link).
 
 ## Environment Setup
 Before you begin, ensure that you have Anaconda or Miniconda installed on your system. This guide assumes that you have a CUDA-enabled GPU.
@@ -14,3 +12,7 @@ After create your conda environment (we recommend python==3.10), please run
 pip install -r requirements.txt
 ```
 to install python packages.
+
+## Datasets
+All datasets in GLBench are available in this [link](https://drive.google.com/drive/folders/1WfBIPA3dMd8qQZ6QlQRg9MIFGMwnPdFj?usp=drive_link).
+Please place them in the ```datasets``` folder.
