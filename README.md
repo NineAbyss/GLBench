@@ -41,6 +41,7 @@ bash
 cd models/enhancer
 ```
 #### Predictor
+---
 ##### InstructGLM
 
 ##### GraphText
