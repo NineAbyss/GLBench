@@ -1,0 +1,12 @@
+python run_cdm.py task_names ci2re num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names wi2re num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names pr2re num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names ci2ins num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names wi2ins num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names pr2ins num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names so2co num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names so2pu num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names so2ci num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names so2wi num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names so2ho num_epochs 30 num_layers 5 dropout 0.15
+python run_cdm.py task_names so2te num_epochs 30 num_layers 5 dropout 0.15
