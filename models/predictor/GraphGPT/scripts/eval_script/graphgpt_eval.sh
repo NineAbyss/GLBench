@@ -11,7 +11,7 @@
 
 # to fill in the following path to extract projector for the second tuning stage!
 dsname=wikics
-output_model=/data/yuhanli/GraphGPTold
+output_model=PATH_TO_YOUR_PRETRAINED_MODEL 
 datapath=GraphGPT/instruct_ds/${dsname}_test_instruct_GLBench.json
 graph_data_path=../../../datasets/${dsname}.pt
 res_path=./GLBench_${dsname}_nc_output
