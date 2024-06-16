@@ -113,6 +113,10 @@ You can use your own API key for OpenAI.
 
 ## Enhancer
 - OFA
+```
+cd models/enhancer/OneForAll/
+bash run_zeroshot.sh
+```
 - ZeroG
 ## Predictor
 - GraphGPT
