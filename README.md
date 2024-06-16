@@ -136,27 +136,25 @@ We are appreciated to all authors of works we cite for their solid work and clea
 ```
 $CODE_DIR
     ├── datasets
-    ├── models
-    │   ├── alignment
-    │   │   ├── GLEM
-    │   │   └── Patton
-    │   ├── enhancer
-    │   │   ├── ENGINE
-    │   │   ├── giant-xrt
-    │   │   ├── OneForAll
-    │   │   └── TAPE
-    │   ├── gnn
-    │   ├── llm
-    │   │   ├── deepseek-chat
-    │   │   ├── gpt-3.5-turbo
-    │   │   ├── gpt-4o
-    │   │   └── llama3-70b
-    │   └── predictor
-    │       ├── GraphAdapter
-    │       ├── GraphGPT
-    │       ├── GraphText
-    │       ├── InstructGLM
-    │       └── LLaGA
-    └── temp_untracked_files
-
+    └── models
+        ├── alignment
+        │   ├── GLEM
+        │   └── Patton
+        ├── enhancer
+        │   ├── ENGINE
+        │   ├── giant-xrt
+        │   ├── OneForAll
+        │   └── TAPE
+        ├── gnn
+        ├── llm
+        │   ├── deepseek-chat
+        │   ├── gpt-3.5-turbo
+        │   ├── gpt-4o
+        │   └── llama3-70b
+        └── predictor
+           ├── GraphAdapter
+           ├── GraphGPT
+           ├── GraphText
+           ├── InstructGLM
+           └── LLaGA
 ```
