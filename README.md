@@ -57,6 +57,10 @@ cd models/predictor/giant-xrt/
 bash run_all.sh
 ```
 - TAPE
+```
+cd models/predictor/TAPE/
+bash run.sh
+```
 - OFA
 - ENGINE
 ### Predictor
