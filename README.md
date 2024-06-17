@@ -118,6 +118,10 @@ cd models/enhancer/OneForAll/
 bash run_zeroshot.sh
 ```
 - ZeroG
+```
+cd models/enhancer/ZeroG/
+bash run.sh
+```
 ## Predictor
 - GraphGPT
 ```
@@ -144,7 +148,8 @@ $CODE_DIR
         │   ├── ENGINE
         │   ├── giant-xrt
         │   ├── OneForAll
-        │   └── TAPE
+        │   ├── TAPE
+        │   └── ZeroG
         ├── gnn
         ├── llm
         │   ├── deepseek-chat
