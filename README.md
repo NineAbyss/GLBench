@@ -124,7 +124,7 @@ bash run_zeroshot.sh
 cd models/predictor/GraphGPT
 bash ./scripts/eval_script/graphgpt_eval.sh
 ```
-## Our other works
+## FYI: our other works
 
 <p align="center"><em>🔥 <strong>A Survey of Graph Meets Large Language Model: Progress and Future Directions (IJCAI'24) <img src="https://img.shields.io/github/stars/yhLeeee/Awesome-LLMs-in-Graph-tasks.svg" alt="GitHub stars" /></strong></em></p>
 <p align="center"><em><a href="https://github.com/yhLeeee/Awesome-LLMs-in-Graph-tasks">Github Repo</a> | <a href="https://arxiv.org/abs/2311.12399">Paper</a></em></p>
