@@ -19,7 +19,9 @@ import torch.backends.cudnn as cudnn
 from param import parse_args
 from pretrain_data import get_loader,load_pickle 
 from utils import LossMeter
-from dist_utils import reduce_dict, new_reduce_dict
+from dist_utils import F1_reduce_dict,reduce_dict, new_reduce_dict
+from sklearn.metrics import f1_score
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "0,1,2,3"
 from peft import (
     LoraConfig,
@@ -29,6 +31,9 @@ from peft import (
     set_peft_model_state_dict,
 )
 
+classes = set(load_pickle(f"../data_preprocess/PubMed_preprocess/label_map.pkl").values())
+classes = list(classes)
+classes2label = {cls: i for i, cls in enumerate(classes)}
 _use_native_amp = False
 _use_apex = False
 
@@ -335,118 +340,118 @@ class Trainer(TrainerBase):
 
                 global_step += 1
                 
-                # if global_step==len(self.train_loader)//8:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid1/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid1/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid1/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid1/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid1/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid1/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid1/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid1/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid1/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid1/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)//8:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid1/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid1/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid1/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid1/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid1/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid1/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid1/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid1/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid1/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid1/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mmid1.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)//4:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid1/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid1/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid1/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid1/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid1/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid1/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid1/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid1/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid1/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid1/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mmid1.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)//4:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid1/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid1/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid1/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid1/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid1/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid1/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid1/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid1/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid1/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid1/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mid1.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)*3//8:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid2/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid2/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid2/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid2/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid2/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid2/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid2/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid2/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid2/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid2/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mid1.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)*3//8:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid2/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid2/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid2/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid2/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid2/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid2/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid2/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid2/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid2/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid2/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mmid2.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)//2:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid2/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid2/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid2/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid2/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid2/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid2/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid2/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid2/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid2/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid2/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mmid2.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)//2:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid2/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid2/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid2/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid2/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid2/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid2/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid2/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid2/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid2/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid2/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mid2.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)*5//8:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid3/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid3/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid3/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid3/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid3/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid3/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid3/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid3/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid3/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid3/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mid2.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)*5//8:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid3/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid3/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid3/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid3/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid3/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid3/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid3/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid3/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid3/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid3/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mmid3.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)*3//4:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid3/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid3/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid3/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid3/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid3/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid3/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid3/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid3/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid3/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid3/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mmid3.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)*3//4:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid3/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid3/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid3/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid3/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid3/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid3/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid3/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid3/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid3/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid3/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mid3.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)*7//8:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mend/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mend/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mend/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mend/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mend/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mend/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mend/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mend/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mend/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mend/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mid3.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)*7//8:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mend/pub_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mend/pub_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mend/pub_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mend/pub_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mend/pub_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mend/pub_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mend/pub_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mend/pub_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mend/pub_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mend/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mend.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_mend.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
 
                 dist.barrier()
 
@@ -524,7 +529,7 @@ class Trainer(TrainerBase):
                 save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_end/pub_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
                 torch.save(self.first_model.state_dict(),"pub_first_{}_{}_8_{}_{}_end.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                #torch.save(self.first_model.state_dict(),"small_pub_first_{}_{}_8_{}_{}_end.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+               
             dist.barrier()
             
             
@@ -534,7 +539,6 @@ class Trainer(TrainerBase):
             if (epoch+1)%8==1:
                 doc_prefix='./llama_{}_mmid1/'.format(epoch//8+1)
                 ckpt_path = "pub_first_{}_{}_8_{}_{}_mmid1.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps) 
-                #ckpt_path = "small_pub_first_{}_{}_8_{}_{}_mmid1.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
             elif (epoch+1)%8==2:
                 doc_prefix='./llama_{}_mid1/'.format(epoch//8+1)
                 ckpt_path = "pub_first_{}_{}_8_{}_{}_mid1.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps) 
@@ -580,24 +584,37 @@ class Trainer(TrainerBase):
                 print('Main model loaded.')
             self.model = self.model.to(self.args.gpu)
             
-            valid_results = self.evaluate_epoch()   # Accuracy
+            ACC_results, F1_results = self.evaluate_epoch()   # Accuracy
             dist.barrier()
 
-            valid_results = new_reduce_dict(valid_results)   
+            ACC_results = new_reduce_dict(ACC_results)   
             dist.barrier()
 
+            F1_results = F1_reduce_dict(F1_results)
+            dist.barrier()
+
+            F1_macro_results = {}
             if self.verbose:
                 print()
                 print()
-                for kk in valid_results.keys():
-                    
+                for kk in ACC_results.keys():
                     if kk.endswith('transductive'):
-                        if self.args.train=='PubMed':
-                            valid_results[kk]=valid_results[kk].item()/self.val_loader.dataset.len_transductive
-                       
-                print(valid_results)
+                        if self.args.train=='Cora':
+                            ACC_results[kk]=ACC_results[kk].item()/self.val_loader.dataset.len_transductive
+                print(ACC_results)
                 print()
                 print()
+                for kk in F1_results.keys():
+                    if kk.endswith('transductive-pred'):
+                        if self.args.train == "Cora":
+                            k = kk.replace('-pred', '')
+                            # set on same device
+                            for i in range(len(F1_results[k + '-label'])):
+                                F1_results[k + '-label'][i] = F1_results[k + '-label'][i].to("cpu")
+                                F1_results[k + '-pred'][i] = F1_results[k + '-pred'][i].to("cpu")
+                            labels = torch.cat(F1_results[k + '-label'], dim=0)
+                            preds = torch.cat(F1_results[k + '-pred'], dim=0)
+                            F1_macro_results[k] = f1_score(labels, preds, average='macro')
 
             dist.barrier()
 
@@ -619,13 +636,15 @@ class Trainer(TrainerBase):
                     acc_file.write(str(epoch//8+1)+'_mend'+'\n')
                 else:
                     acc_file.write(str(epoch//8+1)+'_end'+'\n')
-                acc_file.write(str(valid_results)+'\n\n')
+                acc_file.write(str(ACC_results)+'\n')
+                acc_file.write(str(F1_macro_results)+'\n')
                 acc_file.close()
             dist.barrier()
 
 
     def evaluate_epoch(self):   
         ACC={}
+        F1_macro=collections.defaultdict(list)
         for k in list(self.val_list.keys()):
             if k=='link':
                 pass
@@ -640,9 +659,8 @@ class Trainer(TrainerBase):
         self.first_model.eval()
         self.model.eval()
         with torch.no_grad():
-            for step_i, batch in tqdm(enumerate(self.val_loader)):  
+            for step_i, batch in tqdm(enumerate(self.val_loader)):   
                 torch.cuda.empty_cache()
-
                 if self.args.distributed:
                     
                     device = next(self.model.parameters()).device
@@ -658,15 +676,23 @@ class Trainer(TrainerBase):
                         
                         cate=batch['cate'][iiid] 
                         if temp_id.endswith('2') or temp_id.endswith('4') or temp_id.endswith('6') or temp_id.endswith('7'):  
-                            if results[iiid].lower()==batch['target_text'][iiid]:
+                            print(f"res:{results[iiid].lower()} tar:{batch['target_text'][iiid]}")
+                            if results[iiid].lower() in batch['target_text'][iiid]:
                                 ACC[temp_id+'-'+cate]+=1
-                        
+                                print('ACC:',ACC[temp_id+'-'+cate])
+                            F1_macro[temp_id+'-'+cate+'-'+'label'].append(classes2label[batch['target_text'][iiid]])
+                            pred = 1
+                            for cls in classes:
+                                if results[iiid].lower() in cls:
+                                    pred = classes2label[cls]
+                                    break
+                            F1_macro[temp_id+'-'+cate+'-'+'pred'].append(pred)
                     elif task=='link':
                         pass
 
                 dist.barrier()
 
-            return ACC   
+            return ACC, F1_macro
 
 
 def main_worker(gpu, args):     # the gpu is the local_rank

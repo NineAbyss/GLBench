@@ -29,7 +29,7 @@ from peft import (
     prepare_model_for_int8_training,
     set_peft_model_state_dict,
 )
-classes = set(load_pickle(f"/home/yuhanli/GLBench/models/predictor/InstructGLM_xiao/Reddit/label_map.pkl").values())
+classes = set(load_pickle(f"../data_preprocess/Reddit_preprocess/label_map.pkl").values())
 classes = list(classes)
 classes2label = {cls: i for i, cls in enumerate(classes)}
 _use_native_amp = False
@@ -187,7 +187,7 @@ class Trainer(TrainerBase):
         re_start=0
         if train and re_start==1:
             print('All processes re-starting first-model')
-            ckpt_path="/hpc2hdd/home/yli258/jhaidata/InstructGLM/Reddit_res/Reddit_first_19_8e-05_8_Reddit_8_end.pth"
+            ckpt_path="/InstructGLM/Reddit_res/Reddit_first_19_8e-05_8_Reddit_8_end.pth"
         
             self.load_checkpoint(ckpt_path)
 
@@ -345,118 +345,118 @@ class Trainer(TrainerBase):
 
                 global_step += 1
             
-                # if global_step==len(self.train_loader)//8:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid1/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid1/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid1/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid1/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid1/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid1/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid1/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid1/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid1/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid1/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)//8:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid1/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid1/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid1/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid1/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid1/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid1/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid1/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid1/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid1/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid1/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mmid1.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)//4:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid1/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid1/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid1/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid1/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid1/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid1/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid1/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid1/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid1/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid1/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mmid1.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)//4:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid1/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid1/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid1/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid1/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid1/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid1/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid1/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid1/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid1/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid1/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mid1.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)*3//8:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid2/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid2/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid2/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid2/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid2/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid2/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid2/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid2/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid2/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid2/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mid1.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)*3//8:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid2/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid2/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid2/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid2/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid2/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid2/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid2/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid2/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid2/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid2/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mmid2.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)//2:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid2/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid2/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid2/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid2/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid2/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid2/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid2/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid2/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid2/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid2/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mmid2.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)//2:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid2/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid2/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid2/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid2/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid2/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid2/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid2/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid2/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid2/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid2/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mid2.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)*5//8:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid3/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid3/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid3/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid3/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid3/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid3/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid3/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid3/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid3/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid3/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mid2.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)*5//8:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mmid3/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mmid3/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mmid3/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mmid3/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mmid3/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mmid3/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mmid3/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mmid3/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mmid3/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mmid3/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mmid3.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)*3//4:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid3/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid3/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid3/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid3/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid3/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid3/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid3/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid3/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid3/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid3/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mmid3.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)*3//4:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mid3/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mid3/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mid3/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mid3/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mid3/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mid3/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mid3/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mid3/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mid3/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mid3/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mid3.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
-                # if global_step==len(self.train_loader)*7//8:
-                #     torch.cuda.empty_cache()
-                #     if self.verbose:
-                #         for ig in range(32):
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mend/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mend/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mend/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mend/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mend/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mend/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mend/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #             save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mend/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mend/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
-                #         save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mend/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mid3.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                if global_step==len(self.train_loader)*7//8:
+                    torch.cuda.empty_cache()
+                    if self.verbose:
+                        for ig in range(32):
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_A.default.weight.data,"./llama_{}_mend/Reddit_qa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_A.default.weight.data,"./llama_{}_mend/Reddit_ka_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_A.default.weight.data,"./llama_{}_mend/Reddit_va_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_A.default.weight.data,"./llama_{}_mend/Reddit_oa_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.q_proj.lora_B.default.weight.data,"./llama_{}_mend/Reddit_qb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.k_proj.lora_B.default.weight.data,"./llama_{}_mend/Reddit_kb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.v_proj.lora_B.default.weight.data,"./llama_{}_mend/Reddit_vb_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                            save_pickle(self.model.module.base_model.model.model.layers[ig].self_attn.o_proj.lora_B.default.weight.data,"./llama_{}_mend/Reddit_ob_{}_{}_{}.pkl".format(epoch+1,ig,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_A.default.weight,"./llama_{}_mend/Reddit_lm_a_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
+                        save_pickle(self.model.module.base_model.model.lm_head.lora_B.default.weight,"./llama_{}_mend/Reddit_lm_b_{}_{}.pkl".format(epoch+1,self.args.lr,self.args.gradient_accumulation_steps))
 
-                #         torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mend.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
+                        torch.save(self.first_model.state_dict(),"Reddit_first_{}_{}_8_{}_{}_mend.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps))
 
                 dist.barrier()
 
@@ -541,31 +541,30 @@ class Trainer(TrainerBase):
 
     def test(self):   
         for epoch in range(self.args.epoch):
-            # if (epoch+1)%8==1:
-            #     doc_prefix='./llama_{}_mmid1/'.format(epoch//8+1)
-            #     ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mmid1.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps) 
-            # elif (epoch+1)%8==2:
-            #     doc_prefix='./llama_{}_mid1/'.format(epoch//8+1)
-            #     ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mid1.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps) 
-            # elif (epoch+1)%8==3:
-            #     doc_prefix='./llama_{}_mmid2/'.format(epoch//8+1)
-            #     ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mmid2.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps) 
-            # elif (epoch+1)%8==4:
-            #     doc_prefix='./llama_{}_mid2/'.format(epoch//8+1)
-            #     ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mid2.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
-            # elif (epoch+1)%8==5:
-            #     doc_prefix='./llama_{}_mmid3/'.format(epoch//8+1)
-            #     ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mmid3.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
-            # elif (epoch+1)%8==6:
-            #     doc_prefix='./llama_{}_mid3/'.format(epoch//8+1)
-            #     ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mid3.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
-            # elif (epoch+1)%8==7:
-            #     doc_prefix='./llama_{}_mend/'.format(epoch//8+1)
-            #     ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mend.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
-            # else:
-            epoch = 30
-            doc_prefix='./Reddit_res/llama_{}_end/'.format(epoch+1)
-            ckpt_path = "./Reddit_res/Reddit_first_{}_{}_8_{}_{}_end.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
+            if (epoch+1)%8==1:
+                doc_prefix='./llama_{}_mmid1/'.format(epoch//8+1)
+                ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mmid1.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps) 
+            elif (epoch+1)%8==2:
+                doc_prefix='./llama_{}_mid1/'.format(epoch//8+1)
+                ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mid1.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps) 
+            elif (epoch+1)%8==3:
+                doc_prefix='./llama_{}_mmid2/'.format(epoch//8+1)
+                ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mmid2.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps) 
+            elif (epoch+1)%8==4:
+                doc_prefix='./llama_{}_mid2/'.format(epoch//8+1)
+                ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mid2.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
+            elif (epoch+1)%8==5:
+                doc_prefix='./llama_{}_mmid3/'.format(epoch//8+1)
+                ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mmid3.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
+            elif (epoch+1)%8==6:
+                doc_prefix='./llama_{}_mid3/'.format(epoch//8+1)
+                ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mid3.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
+            elif (epoch+1)%8==7:
+                doc_prefix='./llama_{}_mend/'.format(epoch//8+1)
+                ckpt_path = "Reddit_first_{}_{}_8_{}_{}_mend.pth".format(epoch//8+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
+            else:
+                doc_prefix='./Reddit_res/llama_{}_end/'.format(epoch+1)
+                ckpt_path = "./Reddit_res/Reddit_first_{}_{}_8_{}_{}_end.pth".format(epoch+1,self.args.lr,self.args.train,self.args.gradient_accumulation_steps)
         
             #One can directly assign the checkpoint here when testing.
             ##doc_prefix='./your_main_model_pickle_fold/'
@@ -626,8 +625,23 @@ class Trainer(TrainerBase):
             dist.barrier()
 
             if self.verbose:
-                acc_file=open('Reddit_7b.txt','a')                           
-                acc_file.write(str(epoch+1)+'_end'+'\n')
+                acc_file=open('Pubmed_7b.txt','a')                          
+                if (epoch+1)%8==1:
+                    acc_file.write(str(epoch//8+1)+'_mmid1'+'\n')
+                elif (epoch+1)%8==2:
+                    acc_file.write(str(epoch//8+1)+'_mid1'+'\n')
+                elif (epoch+1)%8==3:
+                    acc_file.write(str(epoch//8+1)+'_mmid2'+'\n')
+                elif (epoch+1)%8==4:
+                    acc_file.write(str(epoch//8+1)+'_mid2'+'\n')
+                elif (epoch+1)%8==5:
+                    acc_file.write(str(epoch//8+1)+'_mmid3'+'\n')
+                elif (epoch+1)%8==6:
+                    acc_file.write(str(epoch//8+1)+'_mid3'+'\n')
+                elif (epoch+1)%8==7:
+                    acc_file.write(str(epoch//8+1)+'_mend'+'\n')
+                else:
+                    acc_file.write(str(epoch//8+1)+'_end'+'\n')
                 acc_file.write(str(ACC_results)+'\n')
                 acc_file.write(str(F1_macro_results)+'\n')
                 acc_file.close()
@@ -669,18 +683,15 @@ class Trainer(TrainerBase):
                         if temp_id.endswith('2') or temp_id.endswith('4') or temp_id.endswith('6') or temp_id.endswith('7'):  
                             res = results[iiid].lower().replace("users","")
                             print(f"res:{res} tar:{batch['target_text'][iiid]}")
-                            # if res in batch['target_text'][iiid].lower() and len(res)>0:
-                            #     ACC[temp_id+'-'+cate]+=1
-                            #     print('ACC:',ACC[temp_id+'-'+cate])
+                            if res in batch['target_text'][iiid].lower() and len(res)>0:
+                                ACC[temp_id+'-'+cate]+=1
+                                print('ACC:',ACC[temp_id+'-'+cate])
                             F1_macro[temp_id+'-'+cate+'-'+'label'].append(classes2label[batch['target_text'][iiid]])
                             pred = 1
                             for cls in classes:
                                 if res in cls.lower() and len(res)>0:
                                     pred = classes2label[cls]
                                     break
-                            if pred == classes2label[batch['target_text'][iiid]]:
-                                ACC[temp_id+'-'+cate]+=1
-                                print('ACC:',ACC[temp_id+'-'+cate])
                             F1_macro[temp_id+'-'+cate+'-'+'pred'].append(pred)
                     elif task=='link':
                         pass
@@ -705,10 +716,8 @@ def main_worker(gpu, args):     # the gpu is the local_rank in DDP
         print(f"args.train: {args.train}")
         if args.train == 'Reddit':
             train_task_list = {
-            'link':[['1-1-1-1','1-3-1-1']],
-            'classification':[['6-6-6-6','6-6-6-7'],['2-3-1-2','2-1-1-2']],
-            # 'link':[['1-1-1-1','1-3-1-1'],['1-1-2-1','1-1-2-3','1-3-2-1','1-3-2-3'],['1-1-3-1','1-1-3-3','1-3-3-1','1-3-3-3']],
-            # 'classification':[['6-6-6-6','6-6-6-7'],['2-3-1-2','2-1-1-2'],['2-3-2-2','2-1-2-2','2-3-2-4','2-1-2-4'],['2-3-3-2','2-1-3-2','2-3-3-4','2-1-3-4']]
+            'link':[['1-1-1-1','1-3-1-1'],['1-1-2-1','1-1-2-3','1-3-2-1','1-3-2-3'],['1-1-3-1','1-1-3-3','1-3-3-1','1-3-3-3']],
+            'classification':[['6-6-6-6','6-6-6-7'],['2-3-1-2','2-1-1-2'],['2-3-2-2','2-1-2-2','2-3-2-4','2-1-2-4'],['2-3-3-2','2-1-3-2','2-3-3-4','2-1-3-4']]
             }
 
         train_sample_numbers = {}   # Abandoned
@@ -734,8 +743,7 @@ def main_worker(gpu, args):     # the gpu is the local_rank in DDP
         print(f'Building val loader at GPU {gpu}')
         if args.valid == 'Reddit':
             val_task_list = {
-            'classification':[['2-3-1-2','2-1-1-2']]
-            # 'classification':[['6-6-6-6','6-6-6-7'],['2-1-2-2','2-1-2-4','2-3-2-2','2-3-2-4'],['2-1-3-2','2-1-3-4','2-3-3-2','2-3-3-4'],['2-1-1-2','2-3-1-2']]
+            'classification':[['6-6-6-6','6-6-6-7'],['2-1-2-2','2-1-2-4','2-3-2-2','2-3-2-4'],['2-1-3-2','2-1-3-4','2-3-3-2','2-3-3-4'],['2-1-1-2','2-3-1-2']]
             }
 
         val_sample_numbers = {} # Abandoned

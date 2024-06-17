@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export CUDA_VISIBLE_DEVICES=2,3
+export CUDA_VISIBLE_DEVICES=0,1,2,3
 
 name=cora-7b
 
@@ -22,7 +22,7 @@ torchrun \
         --num_workers 8 \
         --clip_grad_norm 1.0 \
         --losses 'classification' \
-        --backbone '/data/yuhanli/Llama-2-7b-hf' \
+        --backbone 'your-path-to-Llama-2-7b-hf' \
         --output $output ${@:2} \
         --epoch 20 \
 	--inference \

@@ -19,7 +19,8 @@ os.environ['CUDA_VISIBLE_DEVICES'] = "0,1,2,3"
 from param import parse_args
 from pretrain_data import get_loader,load_pickle 
 from utils import LossMeter
-from dist_utils import reduce_dict, new_reduce_dict
+from dist_utils import F1_reduce_dict, reduce_dict, new_reduce_dict
+from sklearn.metrics import f1_score
 
 from peft import (    # LoRA Setting
     LoraConfig,
@@ -29,6 +30,9 @@ from peft import (    # LoRA Setting
     set_peft_model_state_dict,
 )
 
+classes = set(load_pickle(f"../data_preprocess/Arxiv_preprocess/label_map.pkl").values())
+classes = list(classes)
+classes2label = {cls: i for i, cls in enumerate(classes)}
 _use_native_amp = False
 _use_apex = False
 
@@ -594,22 +598,37 @@ class Trainer(TrainerBase):
                 print('Main model loaded.')
             self.model = self.model.to(self.args.gpu)
             
-            valid_results = self.evaluate_epoch()   # For accuracy
+            ACC_results, F1_results = self.evaluate_epoch()   # Accuracy
             dist.barrier()
 
-            valid_results = new_reduce_dict(valid_results)   
+            ACC_results = new_reduce_dict(ACC_results)   
             dist.barrier()
 
+            F1_results = F1_reduce_dict(F1_results)
+            dist.barrier()
+
+            F1_macro_results = {}
             if self.verbose:
                 print()
                 print()
-                for kk in valid_results.keys():
+                for kk in ACC_results.keys():
                     if kk.endswith('transductive'):
-                        if self.args.train=='Arxiv':
-                            valid_results[kk]=valid_results[kk].item()/self.val_loader.dataset.len_transductive
-                print(valid_results)
+                        if self.args.train=='Reddit':
+                            ACC_results[kk]=ACC_results[kk].item()/self.val_loader.dataset.len_transductive
+                print(ACC_results)
                 print()
                 print()
+                for kk in F1_results.keys():
+                    if kk.endswith('transductive-pred'):
+                        if self.args.train == "Reddit":
+                            k = kk.replace('-pred', '')
+                            # set on same device
+                            for i in range(len(F1_results[k + '-label'])):
+                                F1_results[k + '-label'][i] = F1_results[k + '-label'][i].to("cpu")
+                                F1_results[k + '-pred'][i] = F1_results[k + '-pred'][i].to("cpu")
+                            labels = torch.cat(F1_results[k + '-label'], dim=0)
+                            preds = torch.cat(F1_results[k + '-pred'], dim=0)
+                            F1_macro_results[k] = f1_score(labels, preds, average='macro')
 
             dist.barrier()
 
@@ -631,30 +650,34 @@ class Trainer(TrainerBase):
                     acc_file.write(str(epoch//8+1)+'_mend'+'\n')
                 else:
                     acc_file.write(str(epoch//8+1)+'_end'+'\n')
-                acc_file.write(str(valid_results)+'\n\n')
+
+                acc_file.write(str(ACC_results)+'\n')
+                acc_file.write(str(F1_macro_results)+'\n')
                 acc_file.close()
             dist.barrier()
 
 
     def evaluate_epoch(self):   
         ACC={}
+        F1_macro=collections.defaultdict(list)
         for k in list(self.val_list.keys()):
-            if k=='link':
-                pass
-            elif k=='classification':
-                if self.args.train=='Arxiv':
+            if k=='classification':
+                if self.args.train=='Reddit':
                     templates=[]
                     for tems in self.val_list[k]:
                         templates=templates+tems
                     for thing in templates:
                         ACC[thing+'-'+'transductive']=0
-        self.model.eval()
-        self.first_model.eval()
-        with torch.no_grad():
-            for step_i, batch in tqdm(enumerate(self.val_loader)):  
-                torch.cuda.empty_cache()
+            elif k=='link':
+                pass
 
+        self.first_model.eval()
+        self.model.eval()
+        with torch.no_grad():
+            for step_i, batch in tqdm(enumerate(self.val_loader)):   
+                torch.cuda.empty_cache()
                 if self.args.distributed:
+                    
                     device = next(self.model.parameters()).device
                     input_ids = batch['input_ids'].to(device)
                     embeds = self.first_model(input_ids=input_ids)
@@ -666,19 +689,24 @@ class Trainer(TrainerBase):
                     temp_id=batch['temp_ids'][iiid]
                     if task=='classification':
                         cate=batch['cate'][iiid] 
-                        if temp_id.endswith('2') or temp_id.endswith('4') or temp_id.endswith('6') or temp_id.endswith('7'): 
-                            if results[iiid].lower()==batch['target_text'][iiid]:
+                        if temp_id.endswith('2') or temp_id.endswith('4') or temp_id.endswith('6') or temp_id.endswith('7'):  
+                            res = results[iiid].lower().replace("users","")
+                            if res in batch['target_text'][iiid].lower() and len(res)>0:
                                 ACC[temp_id+'-'+cate]+=1
-                                #Check if the generated text strings is strictly matched with the label in natural language.
-                        else:
-                            pass
-
+                                print('ACC:',ACC[temp_id+'-'+cate])
+                            F1_macro[temp_id+'-'+cate+'-'+'label'].append(classes2label[batch['target_text'][iiid]])
+                            pred = 1
+                            for cls in classes:
+                                if res in cls.lower() and len(res)>0:
+                                    pred = classes2label[cls]
+                                    break
+                            F1_macro[temp_id+'-'+cate+'-'+'pred'].append(pred)
                     elif task=='link':
                         pass
 
                 dist.barrier()
 
-            return ACC   
+            return ACC, F1_macro
 
 
 def main_worker(gpu, args):     # the gpu is the local_rank
@@ -697,10 +725,8 @@ def main_worker(gpu, args):     # the gpu is the local_rank
         # All detailed instruction prompt lists are summarized in all_graph_templates.py and the appendix of our paper.
         if args.train=='Arxiv':
             train_task_list = {
-            'classification' : [['6-6-6-7'],['2-1-3-2','2-1-3-4']],
-            # 'classification':[['6-6-6-7'],['2-1-1-2','2-3-1-2'],['2-1-2-2','2-1-2-4','2-3-2-2','2-3-2-4'],['2-1-3-2','2-1-3-4','2-3-3-2','2-3-3-4']],
-            'link':[['1-1-3-1']]
-            # 'link':[['1-1-1-1','1-3-1-1'],['1-1-2-1','1-1-2-3','1-3-2-1','1-3-2-3'],['1-1-3-1','1-1-3-3','1-3-3-1','1-3-3-3']]
+            'classification':[['6-6-6-7'],['2-1-1-2','2-3-1-2'],['2-1-2-2','2-1-2-4','2-3-2-2','2-3-2-4'],['2-1-3-2','2-1-3-4','2-3-3-2','2-3-3-4']],
+            'link':[['1-1-1-1','1-3-1-1'],['1-1-2-1','1-1-2-3','1-3-2-1','1-3-2-3'],['1-1-3-1','1-1-3-3','1-3-3-1','1-3-3-3']]
             }
 
         train_sample_numbers = {} # Abandoned
@@ -727,7 +753,7 @@ def main_worker(gpu, args):     # the gpu is the local_rank
         # The '6-6-6-7' represents the graph-free instruction prompt. 
         if args.valid=='Arxiv':
             val_task_list = {
-            'classification':[['6-6-6-7']]#,['2-1-1-2','2-3-1-2'],['2-1-2-2','2-1-2-4','2-3-2-2','2-3-2-4'],['2-1-3-2','2-1-3-4','2-3-3-2','2-3-3-4']]
+            'classification':[['6-6-6-7'],['2-1-1-2','2-3-1-2'],['2-1-2-2','2-1-2-4','2-3-2-2','2-3-2-4'],['2-1-3-2','2-1-3-4','2-3-3-2','2-3-3-4']]
             }
         val_sample_numbers = {}  # Abandoned
         val_loader = get_loader(

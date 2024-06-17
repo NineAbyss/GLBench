@@ -295,12 +295,13 @@ def new_reduce_dict(input_dict):
         for k, v in sorted(input_dict_cuda_vals.items()):
             names.append(k)
             values.append(v)
+        # values maybe int or list
+
         values = torch.stack(values, dim=0)
         dist.all_reduce(values) 
-
         reduced_dict = {k: v for k, v in zip(names, values)}
-    return reduced_dict
 
+    return reduced_dict
 
 def F1_reduce_dict(input_dict):
     world_size = get_world_size()

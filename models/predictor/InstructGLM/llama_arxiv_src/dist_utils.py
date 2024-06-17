@@ -301,3 +301,31 @@ def new_reduce_dict(input_dict):  # We mainly use this for our paper.
         reduced_dict = {k: v for k, v in zip(names, values)}
     return reduced_dict
 
+def F1_reduce_dict(input_dict):
+    world_size = get_world_size()
+    if world_size < 2:
+        return input_dict
+
+    with torch.no_grad():
+
+        # Convert to CUDA Tensor for dist.reduce()
+        input_dict_cuda_vals = {}
+        for k, v in input_dict.items():
+            if type(v) == torch.Tensor:
+                input_dict_cuda_vals[k] = v.to('cuda')  
+            else:
+                input_dict_cuda_vals[k] = torch.tensor(v, device='cuda')
+
+        names = []
+        values = []
+        for k, v in sorted(input_dict_cuda_vals.items()):
+            names.append(k)
+            values.append(v)
+        world_size = dist.get_world_size()
+        reduced_dict = {}
+        for name in names:
+            gather_data = [None for _ in range(world_size)]
+            dist.all_gather_object(gather_data, input_dict_cuda_vals[name])
+            reduced_dict[name] = gather_data
+    return reduced_dict
+
