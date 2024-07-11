@@ -8,10 +8,9 @@
 </h5>
 
 This is the official implementation of the following paper: 
-> **GLBench: A Comprehensive Benchmark for Graphs with Large Language Models**
+> **GLBench: A Comprehensive Benchmark for Graphs with Large Language Models** [[Paper](https://arxiv.org/abs/2407.07457)]
 > 
 > Yuhan Li, Peisong Wang, Xiao Zhu, Aochuan Chen, Haiyun Jiang, Deng Cai, Victor Wai Kin Chan, Jia Li
-
 
 <p align="center"><img width="75%" src="images/trend.png" /></p>
 <p align="center"><em>Trend of Graph&LLM.</em></p>
