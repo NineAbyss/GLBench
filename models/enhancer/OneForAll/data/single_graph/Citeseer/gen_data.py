@@ -9,7 +9,7 @@ from ogb.nodeproppred import PygNodePropPredDataset
 def get_data(dset):
     cur_path = os.path.dirname(__file__)
     path = os.path.join(cur_path, "data.pt")
-    data = torch.load(path)
+    data = torch.load('../../../citeseer.pt')
     print(data)
     text = data.raw_texts
     nx_g = pyg.utils.to_networkx(data, to_undirected=True)
