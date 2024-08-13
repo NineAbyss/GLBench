@@ -23,7 +23,7 @@ def get_data(dset):
     # ) as f:
     #     ordered_desc = f.read().split("\n")
     clean_text = ["feature node. paper title and abstract: " + t for t in text]
-    label_text = data.label_names
+    label_text = data.label_name
     edge_label_text = [
         "prompt node. two papers have co-citation",
         "prompt node. two papers do not have co-citation",
