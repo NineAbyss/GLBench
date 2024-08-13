@@ -132,6 +132,9 @@ bash ./scripts/eval_script/graphgpt_eval.sh
 <p align="center"><em>🔥 <strong>A Survey of Graph Meets Large Language Model: Progress and Future Directions (IJCAI'24) <img src="https://img.shields.io/github/stars/yhLeeee/Awesome-LLMs-in-Graph-tasks.svg" alt="GitHub stars" /></strong></em></p>
 <p align="center"><em><a href="https://github.com/yhLeeee/Awesome-LLMs-in-Graph-tasks">Github Repo</a> | <a href="https://arxiv.org/abs/2311.12399">Paper</a></em></p>
 
+<p align="center"><em>🔥 <strong>ZeroG: Investigating Cross-dataset Zero-shot Transferability in Graphs (KDD'24) <img src="https://img.shields.io/github/stars/NineAbyss/ZeroG.svg" alt="GitHub stars" /></strong></em></p>
+<p align="center"><em><a href="https://github.com/NineAbyss/ZeroG">Github Repo</a> | <a href="https://arxiv.org/abs/2402.11235">Paper</a></em></p>
+
 ## Acknowledgement
 We are appreciated to all authors of works we cite for their solid work and clear code organization!
 
