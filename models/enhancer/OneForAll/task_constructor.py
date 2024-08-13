@@ -5,8 +5,6 @@ import numpy as np
 import copy
 
 import utils
-from data.KG.gen_data import KGOFADataset
-from data.chemmol.gen_data import MolOFADataset
 from data.single_graph.gen_data import SingleGraphOFADataset
 
 from ofa_datasets import (GraphListDataset, SubgraphDataset, MultiDataset, GraphListHierDataset, SubgraphHierDataset,
@@ -23,8 +21,7 @@ from utils import (binary_apr_func, binary_auc_multi_func, binary_single_auc_fun
                    flat_auc, )
 
 name2dataset = {"arxiv": SingleGraphOFADataset, "Cora": SingleGraphOFADataset, "Pubmed": SingleGraphOFADataset, "Citeseer":SingleGraphOFADataset, "home":SingleGraphOFADataset,"tech":SingleGraphOFADataset,
-                "WN18RR": KGOFADataset, "FB15K237": KGOFADataset, "wikics": SingleGraphOFADataset,
-                "chemblpre": MolOFADataset, "chempcba": MolOFADataset, "chemhiv": MolOFADataset, "reddit":SingleGraphOFADataset,"instagram":SingleGraphOFADataset}
+                 "wikics": SingleGraphOFADataset, "reddit":SingleGraphOFADataset,"instagram":SingleGraphOFADataset}
 
 
 ########################################################################
