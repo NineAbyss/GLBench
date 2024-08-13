@@ -64,9 +64,9 @@ def ArxivFSSplitter(dataset):
 
 def CiteSplitter(dataset):
     text_g = dataset.data
-    split = {"train": text_g.train_masks[0].nonzero(as_tuple=True)[0],
-             "valid": text_g.val_masks[0].nonzero(as_tuple=True)[0],
-             "test": text_g.test_masks[0].nonzero(as_tuple=True)[0], }
+    split = {"train": text_g.train_mask[0].nonzero(as_tuple=True)[0],
+             "valid": text_g.val_mask[0].nonzero(as_tuple=True)[0],
+             "test": text_g.test_mask[0].nonzero(as_tuple=True)[0], }
     return split
 
 def CiteAllTest(dataset):
