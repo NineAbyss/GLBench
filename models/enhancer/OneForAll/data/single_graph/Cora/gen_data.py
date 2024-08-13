@@ -27,7 +27,7 @@ def get_data(dset):
     path = os.path.join(cur_path, "cora.pt")
     data = torch.load('../../../datasets/cora.pt')
     text = data.raw_texts
-    label_names = data.label_names
+    label_names = data.label_name
     nx_g = pyg.utils.to_networkx(data, to_undirected=True)
     edge_index = torch.tensor(list(nx_g.edges())).T
     print(edge_index.size())
