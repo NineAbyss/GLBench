@@ -54,7 +54,7 @@ def ArxivFSSplitter(dataset):
     #         cls_data_idx = (labels == cls).nonzero(as_tuple=True)[0]
     #         data_idx.append(cls_data_idx.numpy())
     #     fs_split.append([np.array(cls_idx), data_idx])
-    arxivd = torch.load('/hpc2hdd/home/yli258/datasets/arxiv.pt')
+    arxivd = torch.load('../../../datasets/arxiv.pt')
 
     split = {"train": arxivd.train_mask.nonzero(as_tuple=True)[0],
              "valid": arxivd.val_mask.nonzero(as_tuple=True)[0],
@@ -157,7 +157,7 @@ def KGFSSplitter(dataset):
 def WikiSplitter(dataset):
     # text_g = dataset.data
     # wiki_split_idx = 0
-    dataw = torch.load('/hpc2hdd/home/yli258/datasets/wikics.pt')
+    dataw = torch.load('../../../datasets/wikics.pt')
     split = {"train": dataw.train_mask.nonzero(as_tuple=True)[0],
              "valid": dataw.val_mask.nonzero(as_tuple=True)[0],
              "test": dataw.test_mask.nonzero(as_tuple=True)[0], }
@@ -165,7 +165,7 @@ def WikiSplitter(dataset):
 def WikiSplitter(dataset):
     # text_g = dataset.data
     # wiki_split_idx = 0
-    dataw = torch.load('/hpc2hdd/home/yli258/datasets/wikics.pt')
+    dataw = torch.load('../../../datasets/wikics.pt')
     split = {"train": dataw.train_mask.nonzero(as_tuple=True)[0],
              "valid": dataw.val_mask.nonzero(as_tuple=True)[0],
              "test": dataw.test_mask.nonzero(as_tuple=True)[0], }
@@ -173,7 +173,7 @@ def WikiSplitter(dataset):
 def InsSplitter(dataset):
     # text_g = dataset.data
     # wiki_split_idx = 0
-    dataw = torch.load('/hpc2hdd/home/yli258/datasets/instagram.pt')
+    dataw = torch.load('../../../datasets/instagram.pt')
     split = {"train": dataw.train_mask.nonzero(as_tuple=True)[0],
              "valid": dataw.val_mask.nonzero(as_tuple=True)[0],
              "test": dataw.test_mask.nonzero(as_tuple=True)[0], }
@@ -181,7 +181,7 @@ def InsSplitter(dataset):
 def RedSplitter(dataset):
     # text_g = dataset.data
     # wiki_split_idx = 0
-    dataw = torch.load('/hpc2hdd/home/yli258/datasets/reddit.pt')
+    dataw = torch.load('../../../datasets/reddit.pt')
     split = {"train": dataw.train_mask.nonzero(as_tuple=True)[0],
              "valid": dataw.val_mask.nonzero(as_tuple=True)[0],
              "test": dataw.test_mask.nonzero(as_tuple=True)[0], }
@@ -425,8 +425,7 @@ class UnifiedTaskConstructor:
         self.data_config_lookup = data_config_lookup
         self.batch_size = batch_size
         self.sample_size = sample_size
-        with open("data/low_resource_split.json", "r") as f:
-            self.lr_class_split = json.load(f)
+        
 
         self.dataset = {}  # keyed by base dataset names e.g. cora, pubmed and not cora-link
         self.dataset_split = {}  # keyed by dataset names and task level e.g. cora_e2e_link
