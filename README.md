@@ -140,6 +140,7 @@ We are appreciated to all authors of works we cite for their solid work and clea
 The orginal version of the GraphLLM methods are listed as follows:
 
 **Alignment:**
+
 GLEM:
 * (_2022.10_) [ICLR' 2023] **Learning on Large-scale Text-attributed Graphs via Variational Inference** 
 [[Paper](https://arxiv.org/abs/2210.14709) | [Code](https://github.com/AndyJZhao/GLEM)]
@@ -147,6 +148,41 @@ GLEM:
 Patton:
 * (_2023.05_) [ACL' 2023] **PATTON : Language Model Pretraining on Text-Rich Networks** 
 [[Paper](https://arxiv.org/abs/2305.12268) | [Code](https://github.com/PeterGriffinJin/Patton)]
+
+**Enhancer:**
+
+ENGINE:
+* (_2024.01_) [Arxiv' 2024] **Efficient Tuning and Inference for Large Language Models on Textual Graphs** [[Paper](https://arxiv.org/abs/2401.15569)]
+
+GIANT:
+* (_2022.03_) [ICLR' 2022] **Node Feature Extraction by Self-Supervised Multi-scale Neighborhood Prediction** [[Paper](https://arxiv.org/abs/2111.00064) | [Code](https://github.com/amzn/pecos/tree/mainline/examples/giant-xrt)]
+
+OFA:
+* (_2023.09_) [ICLR' 2024] **One for All: Towards Training One Graph Model for All Classification Tasks** [[Paper](https://arxiv.org/abs/2310.00149) | [Code](https://github.com/LechengKong/OneForAll)]
+
+TAPE:
+* (_2023.05_) [ICLR' 2024] **Harnessing Explanations: LLM-to-LM Interpreter for Enhanced Text-Attributed Graph Representation Learning** [[Paper](https://arxiv.org/abs/2305.19523) | [Code](https://github.com/XiaoxinHe/TAPE)]
+
+ZeroG:
+* (_2024.02_) [KDD' 2024] **ZeroG: Investigating Cross-dataset Zero-shot Transferability in Graphs** [[Paper](https://arxiv.org/abs/2402.11235)]
+
+**Enhancer:**
+
+GraphAdapter:
+* (_2024.02_) [WWW' 2024] **Can GNN be Good Adapter for LLMs?** [[Paper](https://arxiv.org/abs/2402.12984)]
+
+GraphGPT:
+* (_2023.10_) [SIGIR' 2024] **GraphGPT: Graph Instruction Tuning for Large Language Models** [[Paper](https://arxiv.org/abs/2310.13023v1) | [Code](https://github.com/HKUDS/GraphGPT)]
+
+GraphText:
+* (_2023.10_) [Arxiv' 2023] **GraphText: Graph Reasoning in Text Space** [[Paper](https://arxiv.org/abs/2310.01089)] | [Code](https://github.com/AndyJZhao/GraphText)]
+
+InstructGLM:
+* (_2023.08_) [Arxiv' 2023] **Natural Language is All a Graph Needs** [[Paper](http://arxiv.org/abs/2308.07134) | [Code](https://github.com/agiresearch/InstructGLM)]
+
+LLaGA:
+* (_2024.02_) [Arxiv' 2024] **LLaGA: Large Language and Graph Assistant** [[Paper](https://arxiv.org/abs/2402.08170) | [Code](https://github.com/VITA-Group/LLaGA)]
+
 
 
 ## Code Base Structure
