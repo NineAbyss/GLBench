@@ -137,6 +137,10 @@ bash ./scripts/eval_script/graphgpt_eval.sh
 
 ## Acknowledgement
 We are appreciated to all authors of works we cite for their solid work and clear code organization!
+The orginal version of the GraphLLM methods are listed as follows:
+Alignment:
+* (_2022.10_) [ICLR' 2023] **Learning on Large-scale Text-attributed Graphs via Variational Inference** 
+[[Paper](https://arxiv.org/abs/2210.14709) | [Code](https://github.com/AndyJZhao/GLEM)]
 
 ## Code Base Structure
 ```
