@@ -164,7 +164,8 @@ TAPE:
 * (_2023.05_) [ICLR' 2024] **Harnessing Explanations: LLM-to-LM Interpreter for Enhanced Text-Attributed Graph Representation Learning** [[Paper](https://arxiv.org/abs/2305.19523) | [Code](https://github.com/XiaoxinHe/TAPE)]
 
 ZeroG:
-* (_2024.02_) [KDD' 2024] **ZeroG: Investigating Cross-dataset Zero-shot Transferability in Graphs** [[Paper](https://arxiv.org/abs/2402.11235)]
+* (_2024.02_) [KDD' 2024] **ZeroG: Investigating Cross-dataset Zero-shot Transferability in Graphs** [[Paper](https://arxiv.org/abs/2402.11235)] | [Code](https://github.com/XiaoxinHe/TAPE](https://github.com/NineAbyss/ZeroG)]
+
 
 **Enhancer:**
 
