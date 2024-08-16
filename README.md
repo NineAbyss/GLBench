@@ -140,10 +140,11 @@ We are appreciated to all authors of works we cite for their solid work and clea
 The orginal version of the GraphLLM methods are listed as follows:
 
 **Alignment:**
-
+GLEM:
 * (_2022.10_) [ICLR' 2023] **Learning on Large-scale Text-attributed Graphs via Variational Inference** 
 [[Paper](https://arxiv.org/abs/2210.14709) | [Code](https://github.com/AndyJZhao/GLEM)]
 
+Patton:
 * (_2023.05_) [ACL' 2023] **PATTON : Language Model Pretraining on Text-Rich Networks** 
 [[Paper](https://arxiv.org/abs/2305.12268) | [Code](https://github.com/PeterGriffinJin/Patton)]
 
