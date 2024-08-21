@@ -152,7 +152,7 @@ Patton:
 **Enhancer:**
 
 ENGINE:
-* (_2024.01_) [Arxiv' 2024] **Efficient Tuning and Inference for Large Language Models on Textual Graphs** [[Paper](https://arxiv.org/abs/2401.15569)]
+* (_2024.01_) [IJCAI' 2024] **Efficient Tuning and Inference for Large Language Models on Textual Graphs** [[Paper](https://arxiv.org/abs/2401.15569)]
 
 GIANT:
 * (_2022.03_) [ICLR' 2022] **Node Feature Extraction by Self-Supervised Multi-scale Neighborhood Prediction** [[Paper](https://arxiv.org/abs/2111.00064) | [Code](https://github.com/amzn/pecos/tree/mainline/examples/giant-xrt)]
@@ -167,7 +167,7 @@ ZeroG:
 * (_2024.02_) [KDD' 2024] **ZeroG: Investigating Cross-dataset Zero-shot Transferability in Graphs** [[Paper](https://arxiv.org/abs/2402.11235)] | [Code](https://github.com/NineAbyss/ZeroG)]
 
 
-**Enhancer:**
+**Predictor:**
 
 GraphAdapter:
 * (_2024.02_) [WWW' 2024] **Can GNN be Good Adapter for LLMs?** [[Paper](https://arxiv.org/abs/2402.12984)]
