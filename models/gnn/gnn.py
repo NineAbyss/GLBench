@@ -48,7 +48,7 @@ path = osp.join(osp.dirname(osp.realpath(__file__)), '..', 'data', 'Planetoid')
 dataname = args.dataname
 data = torch.load(f'../../datasets/{dataname}.pt').to(device)
 if args.st:
-    data.x = torch.load(f'st_embeddings/{dataname}.pt').to(device)
+    data.x = torch.load(f'st_embeddings/{dataname}_st.pt').to(device)
 data.edge_index = to_undirected(data.edge_index)
 
 if len(data.train_mask)==10:

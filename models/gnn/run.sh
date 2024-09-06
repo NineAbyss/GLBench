@@ -5,6 +5,7 @@ models=("GAT" "SAGE" "GCN")
 hidden_channels=(16 64 128 256)
 num_layers=(2 3)
 dropout=(0.3 0.5 0.6)
+python st_embeddings.py
 for model in "${models[@]}"
 do
     for dataset in "${datasets[@]}"
