@@ -15,9 +15,9 @@ def text_emb(TextModel, tokenizer, data, device):
             del output, encoded_input  
             torch.cuda.empty_cache()
     text_features_tensor = torch.cat(text_features, dim=0)
-    torch.save(text_features_tensor, f'st_embeddings/{dataname}_128.pt')
+    torch.save(text_features_tensor, f'st_embeddings/{dataname}_st.pt')
 
-datanames = ['pubmed']
+datanames = ['cora', "pubmed", "citeseer", "wikics", "arxiv", "instagram", "reddit"]
 device = 'cuda:0'
 
 tokenizer = AutoTokenizer.from_pretrained("google/bert_uncased_L-2_H-128_A-2")
