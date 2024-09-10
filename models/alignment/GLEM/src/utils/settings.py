@@ -1,7 +1,8 @@
 import subprocess as sp
 from pathlib import Path
 from types import SimpleNamespace as SN
-
+import sys
+from pathlib import Path
 LINUX_HOME = str(Path.home())
 
 
@@ -30,7 +31,7 @@ PROJ_NAME = 'CirTraining'
 # ! Project Path Settings
 
 GPU_CF = {
-    'py_path': f'{str(Path.home())}/anaconda3/envs/ctt/bin/python',
+    'py_path': sys.executable,  # 动态获取当前 Python 环境的路径
     'mnt_dir': f'{LINUX_HOME}/{PROJ_NAME}/',
     'default_gpu': '0',
 }

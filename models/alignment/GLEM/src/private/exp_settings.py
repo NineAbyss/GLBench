@@ -1,9 +1,11 @@
 from pathlib import Path
-
+import os
+import sys
+from pathlib import Path
 # ! Servers
 LINUX_HOME = str(Path.home())
-CONDA_ENV_NAME = 'ctt'
-CONDA_PATH = f'{LINUX_HOME}/anaconda3/envs/{CONDA_ENV_NAME}'
+CONDA_ENV_NAME = os.path.basename(sys.prefix)
+CONDA_PATH = sys.prefix
 NV_HTOP_FILE = f"{CONDA_PATH}/bin/nvidia-htop.py"
 SV_INIT_CMDS = [
     f'source {LINUX_HOME}/miniconda/etc/profile.d/conda.sh;conda activate {CONDA_ENV_NAME}',
