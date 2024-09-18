@@ -56,8 +56,7 @@ class GNNTrainer():
         elif cf.model == 'SAGE':
             self.model = SAGE(self.features.shape[1], cf.data.n_labels, cf.n_hidden, cf.n_layers, F.relu, cf.dropout).to(cf.device)
             self.optimizer = th.optim.Adam(self.model.parameters(), lr=cf.lr, weight_decay=cf.weight_decay)
-            import pdb
-            pdb.set_trace()
+
         else:
             ValueError(f'Unimplemented GNNs model {cf.model}!')
         trainable_params = sum(
