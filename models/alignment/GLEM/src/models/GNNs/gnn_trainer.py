@@ -4,6 +4,7 @@ import utils.function as uf
 from models.GNNs.gnn_utils import *
 from models.GNNs.GCN.model import GCN
 from models.GNNs.RevGAT.model import RevGAT
+from models.GNNs.SAGE.model import SAGE
 from models.GLEM.GLEM_utils import *
 from models.GNNs.gnn_utils import *
 from utils.data.datasets import *
@@ -52,7 +53,11 @@ class GNNTrainer():
             self.model = RevGAT(self.features.shape[1], cf.data.n_labels, cf.n_hidden, cf.n_layers, cf.n_heads, F.relu, cf.dropout,
                                 cf.input_drop, cf.attn_drop, cf.edge_drop, not cf.no_attn_dst, cf.use_norm, input_norm=cf.input_norm == 'T').to(cf.device)
             self.optimizer = th.optim.RMSprop(self.model.parameters(), lr=cf.lr, weight_decay=cf.weight_decay)
-            # self.model = get_model(self.features.shape[1], cf.data.n_labels, cf.data.n_labels, stage, self.cf)
+        elif cf.model == 'SAGE':
+            self.model = SAGE(self.features.shape[1], cf.data.n_labels, cf.n_hidden, cf.n_layers, F.relu, cf.dropout).to(cf.device)
+            self.optimizer = th.optim.Adam(self.model.parameters(), lr=cf.lr, weight_decay=cf.weight_decay)
+            import pdb
+            pdb.set_trace()
         else:
             ValueError(f'Unimplemented GNNs model {cf.model}!')
         trainable_params = sum(
