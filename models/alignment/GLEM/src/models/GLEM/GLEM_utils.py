@@ -6,8 +6,6 @@ import math
 
 
 class EmIterInfo:
-    # ! 这里的逻辑是存放各个 EM-Iter 中不变的信息
-    # ! GNN first/ LM first 的逻辑在别处存放
 
     def __init__(self, em_info, em_iter=-1):
         self.em_info, self.iter = em_info, em_iter
@@ -129,16 +127,27 @@ def get_lm_info(lm_folder, model):
 
 
 def compute_loss(logits, labels, loss_func, is_gold=None, pl_weight=0.5, is_augmented=False):
-    """
-    Combine two types of losses: (1-α)*MLE (CE loss on gold) + α*Pl_loss (CE loss on pseudo labels)
-    """
     import torch as th
+
+    def safe_loss_compute(logits, labels):
+        try:
+            return loss_func(logits, labels)
+        except RuntimeError as e:
+            if "multi-target not supported" in str(e):
+                labels = labels.argmax(dim=1)
+                return loss_func(logits, labels)
+            else:
+                raise  
 
     if is_augmented and ((n_pseudo := sum(~is_gold)) > 0):
         deal_nan = lambda x: 0 if th.isnan(x) else x
-        mle_loss = deal_nan(loss_func(logits[is_gold], labels[is_gold]))
-        pl_loss = deal_nan(loss_func(logits[~is_gold], labels[~is_gold]))
+        
+
+        
+        mle_loss = deal_nan(safe_loss_compute(logits[is_gold], labels[is_gold]))
+        pl_loss = deal_nan(safe_loss_compute(logits[~is_gold], labels[~is_gold]))
         loss = pl_weight * pl_loss + (1 - pl_weight) * mle_loss
     else:
-        loss = loss_func(logits, labels)
+        loss = safe_loss_compute(logits, labels)
+    
     return loss
