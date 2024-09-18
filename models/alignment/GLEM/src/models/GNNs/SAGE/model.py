@@ -25,27 +25,17 @@ class SAGE(nn.Module):
         self.dropout = nn.Dropout(dropout)
         self.activation = activation
 
-    def forward(self, blocks, x):
+    def forward(self, g, x):
         h = x
-        for l, (layer, block) in enumerate(zip(self.layers, blocks)):
-            # We need to first copy the representation of nodes on the RHS from the
-            # appropriate nodes on the LHS.
-            # Note that the shape of h is (num_nodes_LHS, D) and the shape of h_dst
-            # would be (num_nodes_RHS, D)
-            h_dst = h[:block.num_dst_nodes()]
-            # Then we compute the updated representation on the RHS.
-            # The shape of h now becomes (num_nodes_RHS, D)
-            h = layer(block, (h, h_dst))
+        for l, layer in enumerate(self.layers):
+            h = layer(g, h)
             if l != len(self.layers) - 1:
                 h = self.activation(h)
                 h = self.dropout(h)
         return h
 
     def inference(self, g, x, output_hidden_layer =None):
-        """
-        用於評估，針對的是完全圖
-        目前會出現重複計算的問題
-        """
+
         if output_hidden_layer is None:  # Set to an impossible epoch number
             output_hidden_layer = MAX_N_LAYERS
             
