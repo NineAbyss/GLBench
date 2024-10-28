@@ -44,6 +44,11 @@ python st_embeddings.py
 python mlp.py
 ```
 
+Benchmark the LMs in zero-shot settings (gpt-4o, gpt-3.5-turbo,llama3-70b,deepseek-chat)
+```
+cd models/llm
+python inference.py --model gpt-4o --data cora
+```
 ### Enhancer
 - GIANT
 
