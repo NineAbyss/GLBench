@@ -37,10 +37,11 @@ cd models/gnn
 bash models/gnn/run.sh
 ```
 ### LLM
-Benchmark the LLMs(Sent-BERT, BERT, RoBERTa)
+Benchmark the LMs in supervised settings (Sent-BERT, BERT, RoBERTa)
 ```
-cd models/llm
-bash 
+cd models/gnn
+python st_embeddings.py
+python mlp.py
 ```
 
 ### Enhancer
